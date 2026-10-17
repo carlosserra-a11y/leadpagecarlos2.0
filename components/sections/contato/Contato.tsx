@@ -96,7 +96,7 @@ export function Contato({ qr }: { qr: React.ReactNode }) {
 
   return (
     <section id="contato" aria-labelledby="contato-t" className="section">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_50%_at_20%_20%,rgba(26,16,48,.9),transparent),radial-gradient(40%_40%_at_90%_80%,rgba(242,193,78,.06),transparent)]" />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_50%_at_20%_20%,rgba(10,31,61,.9),transparent),radial-gradient(40%_40%_at_90%_80%,rgba(242,193,78,.06),transparent)]" />
       <div className="wrap relative grid gap-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16">
         <div className="grid content-start gap-8">
           <SectionHead id="contato-t" k={t.contato.k} t={t.contato.t} p={t.contato.p} />

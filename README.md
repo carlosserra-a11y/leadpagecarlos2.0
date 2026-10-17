@@ -11,9 +11,9 @@ Tem dois objetivos: **conseguir estágio ou vaga júnior** e **vender a criaçã
 
 | Seção | O que faz |
 |---|---|
-| **Intro** | O anel do alfabeto gótico se forma, "Carlos Serra" surge do centro e o contador segue o carregamento real. A página se abre em círculo a partir do buraco negro. Aparece só na primeira visita da sessão e pode ser pulada. |
-| **Hero** | Buraco negro em 3D (three.js): esfera escura, anel de fótons, disco de acreção com fragmentos dourados em órbita de Kepler (os de perto do centro giram mais rápido), lente gravitacional, nebulosa, estrelas e poeira. O mouse move a câmera (parallax). Na rolagem, a câmera avança até atravessar o horizonte. |
-| **Galáxia de Projetos** | Os 5 melhores projetos viram monólitos de vidro orbitando o buraco negro. A rolagem gira a órbita, clicar abre o estudo de caso e as setas ← → navegam. No celular vira um carrossel de arrastar. |
+| **Intro** | O anel do alfabeto gótico se forma e "Carlos Serra" é escrito letra por letra em traço dourado (os contornos reais da fonte), depois se preenche e recebe um brilho. O contador segue o carregamento real. A página se abre em círculo a partir do buraco negro. Aparece só na primeira visita da sessão e pode ser pulada. |
+| **Hero** | Buraco negro calculado com física de verdade: cada pixel segue a trajetória da luz em volta da massa (relatividade geral). Por isso aparecem o arco do disco por cima e por baixo da sombra, o anel de fótons e as estrelas do fundo deformadas pela lente. O disco de gás tem a cor e o brilho da temperatura real, fica mais claro do lado que vem na nossa direção (efeito Doppler) e mais vermelho perto do horizonte. O mouse move a câmera (parallax). Na rolagem, a câmera avança até atravessar o horizonte. |
+| **Galáxia de Projetos** | Os 5 melhores projetos viram monólitos de vidro orbitando o buraco negro (o mesmo cálculo de luz do hero, em tamanho menor). A rolagem gira a órbita, clicar abre o estudo de caso e as setas ← → navegam. No celular vira um carrossel de arrastar. |
 | **Arquivo** | Todos os repositórios públicos com filtros. Repositórios novos entram sozinhos (busca no GitHub durante o build). |
 | **Serviços** | Pacotes de site (landing page, institucional, loja, sistema com painel). O preço só aparece se estiver em `dados.ts`. |
 | **Processo** | A linha do tempo é traçada conforme a rolagem. |
@@ -23,6 +23,22 @@ Tem dois objetivos: **conseguir estágio ou vaga júnior** e **vender a criaçã
 | **Rodapé** | "Pronto para entrar na órbita?" e o nome gigante em gótica que acende onde o mouse passa. |
 
 Tudo em **português e inglês**, com troca sem recarregar a página.
+
+## Cores do espaço interestelar
+
+O fundo é o preto do espaço com nebulosas azul-petróleo e campos de estrelas. O dourado vem do disco de acreção.
+
+| Token | Cor | Uso |
+|---|---|---|
+| `void` | `#010307` | fundo |
+| `space` | `#040a14` | cartões |
+| `nebula` | `#0a1f3d` | nebulosa azul |
+| `teal` | `#0e4a5c` | nebulosa azul-petróleo |
+| `gold` / `gold-hi` | `#f4c25c` / `#fff1c9` | destaque, disco de acreção |
+| `ember` | `#ff8a3d` | gás mais frio do disco |
+| `ice` | `#9fd3ff` | estrelas, detalhes |
+
+Os tokens ficam em `app/globals.css`.
 
 ## Tipografia gótica
 
@@ -77,11 +93,11 @@ Configuração do GitHub Pages (uma vez só): **Settings → Pages → Build and
 
 - **Next.js 16 (App Router) com exportação estática.** Não precisa de servidor, roda direto no GitHub Pages. React 19, TypeScript estrito e Tailwind CSS 4.
 - **3D com three.js + React Three Fiber.**
-  - A órbita dos fragmentos é calculada no shader (GPU).
+  - O buraco negro é um ray tracing de Schwarzschild feito no shader (`components/hero/shaders/gargantua.ts`): o raio de luz anda em passos pela equação da geodésica, e o disco usa o perfil de brilho de Novikov–Thorne, cor de corpo negro, Doppler relativístico e desvio para o vermelho gravitacional.
   - Toda a cena carrega só depois da primeira interação; até lá aparece um pôster tirado da própria cena.
-  - A qualidade se ajusta ao aparelho (1500, 700 ou 350 fragmentos) e cai sozinha se o FPS ficar baixo.
+  - A qualidade se ajusta ao aparelho (220, 160 ou 110 passos por raio, e resolução menor) e cai sozinha se o FPS ficar baixo.
   - Sem WebGL ou com "reduzir movimento", fica o pôster.
-- **Desempenho medido no Lighthouse.** Computador: 96 de desempenho; 100 em acessibilidade, boas práticas e SEO. Celular (4G lento simulado): ~82 de desempenho; 100 nos outros três.
+- **Desempenho medido no Lighthouse.** Computador: ~93 de desempenho; 100 em acessibilidade, boas práticas e SEO. Celular (4G lento simulado): ~80 de desempenho; 100 nos outros três.
 - **Segurança.** A CSP vai numa `<meta>` com o hash de cada script do build (`ferramentas/csp.mjs`), sem scripts de terceiros. As fontes ficam no próprio repositório (`app/fontes`), então o build não depende do Google Fonts. Links externos usam `noopener`.
 - **Acessibilidade.**
   - Um `h1` só, foco dourado visível e tudo navegável por teclado.
@@ -97,10 +113,11 @@ Configuração do GitHub Pages (uma vez só): **Settings → Pages → Build and
 | `servir.mjs` | servidor local igual ao GitHub Pages |
 | `marca.mjs` | logo, favicon e ícones a partir da fonte UnifrakturCook |
 | `anel.mjs` | anel do alfabeto gótico em contorno |
+| `nome.mjs` | contornos das letras de "Carlos Serra" para a intro (`components/layout/nomePath.ts`) |
 | `poster.mjs` | pôster do hero a partir da cena 3D |
 | `og.mjs` | imagem de compartilhamento (`og.jpg`) |
 
-Para usar `marca`, `anel`, `poster` e `og`, rode antes `cd ferramentas && npm install && npm run fontes`.
+Para usar `marca`, `anel`, `nome`, `poster` e `og`, rode antes `cd ferramentas && npm install && npm run fontes`.
 
 ## Contato
 

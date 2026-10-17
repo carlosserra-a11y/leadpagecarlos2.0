@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useMemo, useRef, useState, type RefObject } from "react";
 import { Canvas, useFrame, useThree, type ThreeEvent } from "@react-three/fiber";
-import { RoundedBox, useTexture } from "@react-three/drei";
+import { Billboard, RoundedBox, useTexture } from "@react-three/drei";
 import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import * as THREE from "three";
 import { asset } from "@/lib/asset";
@@ -10,7 +10,8 @@ import { PROJETOS } from "@/lib/dados";
 import type { Tier } from "@/lib/useDeviceTier";
 import type { Progresso } from "@/components/sections/projetos/Galaxia";
 import { heroState } from "@/components/hero/heroState";
-import { AnelDeFotons, DiscoDeGas, Estrelas, damp, type Fase, type Q } from "./partes";
+import { gargantuaSprite } from "@/components/hero/shaders/gargantua";
+import { Estrelas, damp, type Q } from "./partes";
 
 const N = PROJETOS.length;
 const PASSO = (Math.PI * 2) / N;
@@ -66,7 +67,7 @@ function Monolito({ i, tex, ativo, hover, setHover, onPick }: { i: number; tex: 
           onPick(i);
         }}
       >
-        <meshStandardMaterial color="#0b0912" metalness={0.7} roughness={0.28} emissive={cor} emissiveIntensity={0.04} />
+        <meshStandardMaterial color="#081120" metalness={0.7} roughness={0.28} emissive={cor} emissiveIntensity={0.04} />
       </RoundedBox>
       <mesh position={[0, 0, 0.045]}>
         <planeGeometry args={[W, H]} />
@@ -133,28 +134,42 @@ function Orbita({ prog, ativo, onPick }: Omit<Props, "tier">) {
   );
 }
 
-/* Buraco negro pequeno no centro da órbita, com as mesmas peças do hero */
+/* O mesmo buraco negro do hero (ray tracing), desenhado num plano que encara a câmera */
 function Singularidade({ q }: { q: Q }) {
-  const fase = useRef<Fase>({ phase: 0, time: 0 });
   const g = useRef<THREE.Group>(null);
   const { size } = useThree();
-  useFrame((_, dt) => {
-    fase.current.phase += Math.min(dt, 0.1) * 0.45;
-    fase.current.time += Math.min(dt, 0.1);
+  const mat = useMemo(
+    () =>
+      new THREE.ShaderMaterial({
+        ...gargantuaSprite(q === "high" ? 150 : 120, 4),
+        uniforms: {
+          uOlho: { value: new THREE.Vector3(0, 2.2, 30) },
+          uAbertura: { value: 0.62 },
+          uTime: { value: 0 },
+          uPhase: { value: 0 },
+          uDoppler: { value: 0.72 },
+          uExposure: { value: 1.15 },
+        },
+        transparent: true,
+        premultipliedAlpha: true,
+        depthWrite: false,
+      }),
+    [q],
+  );
+  useFrame((_, dtRaw) => {
+    const dt = Math.min(dtRaw, 0.1);
+    mat.uniforms.uTime.value += dt;
+    mat.uniforms.uPhase.value += dt * 0.8;
     if (g.current) g.current.position.x = -Math.min(3.1, 0.95 * (size.width / size.height) + 0.6);
   });
   return (
-    <group ref={g} position={[0, -0.1, 0]}>
-      <group scale={0.42} rotation={[0.22, 0, -0.08]}>
-        <mesh>
-          <sphereGeometry args={[1, 48, 32]} />
-          <meshBasicMaterial color="#000000" />
+    <group ref={g} position={[0, -0.1, -0.3]}>
+      <Billboard>
+        <mesh renderOrder={-1}>
+          <planeGeometry args={[5.4, 5.4]} />
+          <primitive object={mat} attach="material" />
         </mesh>
-        <DiscoDeGas q={q} fase={fase} />
-      </group>
-      <group scale={0.42}>
-        <AnelDeFotons q={q} fase={fase} />
-      </group>
+      </Billboard>
     </group>
   );
 }
@@ -198,7 +213,7 @@ export default function ProjectOrbit({ prog, ativo, tier, onPick }: Props) {
             gl.domElement.addEventListener("webglcontextlost", () => setFalhou(true), { once: true });
           }}
         >
-          <color attach="background" args={["#020205"]} />
+          <color attach="background" args={["#010307"]} />
           <ambientLight intensity={0.35} />
           <pointLight position={[-2.6, 0.4, 0.6]} color="#f2c14e" intensity={18} distance={14} decay={1.6} />
           <directionalLight position={[4, 5, 6]} intensity={0.9} color="#9ec5ff" />

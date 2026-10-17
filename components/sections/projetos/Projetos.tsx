@@ -46,7 +46,7 @@ export function Projetos({ novos }: { novos: Repo[] }) {
 
   return (
     <section id="projetos" aria-labelledby="projetos-t" className="section relative !pb-0">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[70svh] bg-[radial-gradient(50%_60%_at_50%_0%,rgba(26,16,48,.9),transparent)]" />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[70svh] bg-[radial-gradient(50%_60%_at_50%_0%,rgba(10,31,61,.9),transparent)]" />
       <div className="wrap relative">
         <SectionHead id="projetos-t" k={t.projetos.k} t={t.projetos.t} p={t.projetos.p} />
       </div>

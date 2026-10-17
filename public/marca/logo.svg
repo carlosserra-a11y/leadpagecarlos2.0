@@ -4,7 +4,7 @@
       <stop offset=".1" stop-color="#fff6d6"/><stop offset=".55" stop-color="#f2c14e"/><stop offset="1" stop-color="#b06d1a"/>
     </linearGradient>
     <radialGradient id="v" cx=".5" cy=".5" r=".5">
-      <stop offset=".6" stop-color="#020205"/><stop offset="1" stop-color="#1a1030"/>
+      <stop offset=".6" stop-color="#010307"/><stop offset="1" stop-color="#0a1f3d"/>
     </radialGradient>
   </defs>
   <circle cx="32" cy="32" r="31" fill="url(#v)"/>

@@ -12,8 +12,8 @@ export function Logo({ className, size = 40 }: { className?: string; size?: numb
           <stop offset="1" stopColor="#b06d1a" />
         </linearGradient>
         <radialGradient id="logo-v" cx=".5" cy=".5" r=".5">
-          <stop offset=".62" stopColor="#020205" />
-          <stop offset="1" stopColor="#1a1030" />
+          <stop offset=".62" stopColor="#010307" />
+          <stop offset="1" stopColor="#0a1f3d" />
         </radialGradient>
       </defs>
       <circle cx="32" cy="32" r="30" fill="url(#logo-v)" />

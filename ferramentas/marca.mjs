@@ -30,7 +30,7 @@ const defs = `
       <stop offset=".1" stop-color="#fff6d6"/><stop offset=".55" stop-color="#f2c14e"/><stop offset="1" stop-color="#b06d1a"/>
     </linearGradient>
     <radialGradient id="v" cx=".5" cy=".5" r=".5">
-      <stop offset=".6" stop-color="#020205"/><stop offset="1" stop-color="#1a1030"/>
+      <stop offset=".6" stop-color="#010307"/><stop offset="1" stop-color="#0a1f3d"/>
     </radialGradient>
   </defs>`;
 
@@ -44,14 +44,14 @@ const logo = (fundo = true) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox=
 
 // Favicon: traço mais grosso para ler em 16–32 px
 const favicon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">${defs}
-  <circle cx="32" cy="32" r="31" fill="#020205"/>
+  <circle cx="32" cy="32" r="31" fill="#010307"/>
   <circle cx="32" cy="32" r="28.5" fill="none" stroke="url(#g)" stroke-width="3"/>
   <path d="${letras("CS", 32, 32, 42)}" fill="url(#g)"/>
 </svg>`;
 
 // Ícone quadrado (celular): fundo cheio, sem transparência
 const quadrado = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">${defs}
-  <rect width="64" height="64" fill="#020205"/>
+  <rect width="64" height="64" fill="#010307"/>
   <circle cx="32" cy="32" r="24" fill="url(#v)"/>
   <circle cx="32" cy="32" r="23" fill="none" stroke="url(#g)" stroke-width="1.2"/>
   <path d="M10 37c7 6 37 5.5 44-8" fill="none" stroke="#f2c14e" stroke-width="1.8" stroke-linecap="round" opacity=".85"/>

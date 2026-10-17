@@ -6,8 +6,6 @@ import { useEffect, useState } from "react";
    off = pôster estático (sem WebGL, "reduzir movimento" ou economia de dados). */
 export type Tier = "high" | "mid" | "low" | "off";
 
-export const INSTANCIAS: Record<Exclude<Tier, "off">, number> = { high: 1500, mid: 700, low: 350 };
-
 type NavExtra = Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } };
 
 let cache: Tier | null = null;

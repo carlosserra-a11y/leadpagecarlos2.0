@@ -107,7 +107,8 @@ test("tela de carregamento aparece com o nome e libera a página sozinha", async
   await page.goto("./", { waitUntil: "commit" });
   const loader = page.locator(".loader");
   await expect(loader).toBeVisible();
-  await expect(loader).toContainText("Carlos Serra");
+  // o nome é desenhado em SVG (contornos das letras), não em texto
+  await expect(loader.locator(".nome-intro .nome-letras path").first()).toBeVisible();
   await expect(loader).toBeHidden({ timeout: 5000 });
   await expect(page.locator("html")).not.toHaveClass(/carregando/);
 });

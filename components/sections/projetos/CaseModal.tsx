@@ -79,7 +79,7 @@ export function CaseModal({ index, onChange, onClose }: { index: number | null; 
     >
       {aberto && (
         <div className="grid gap-8 p-[clamp(20px,4vw,48px)]">
-          <div className="sticky top-0 z-10 -mx-[clamp(20px,4vw,48px)] -mt-[clamp(20px,4vw,48px)] flex items-start justify-between gap-4 bg-[#0a0812]/90 px-[clamp(20px,4vw,48px)] pb-4 pt-[clamp(20px,4vw,48px)] backdrop-blur">
+          <div className="sticky top-0 z-10 -mx-[clamp(20px,4vw,48px)] -mt-[clamp(20px,4vw,48px)] flex items-start justify-between gap-4 bg-[#06101d]/90 px-[clamp(20px,4vw,48px)] pb-4 pt-[clamp(20px,4vw,48px)] backdrop-blur">
             <div>
               <p className="kicker text-[0.7rem]">
                 {x.cliente} · {x.tag}

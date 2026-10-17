@@ -7,7 +7,7 @@ export async function QrWhatsapp() {
     type: "svg",
     margin: 0,
     errorCorrectionLevel: "M",
-    color: { dark: "#f5f1e8", light: "#00000000" },
+    color: { dark: "#eef1f6", light: "#00000000" },
   });
   return <div className="size-[132px] [&>svg]:size-full" aria-hidden="true" dangerouslySetInnerHTML={{ __html: svg }} />;
 }

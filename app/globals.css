@@ -1,20 +1,22 @@
 @import "tailwindcss";
 
 /* =========================================================================
-   Gótico Cósmico · tokens, base e componentes que o Tailwind não cobre
+   Gótico Cósmico · paleta do espaço interestelar (azul profundo, véus verde-azulados
+   e o âmbar do disco de acreção) · tokens, base e componentes que o Tailwind não cobre
    ========================================================================= */
 
 @theme {
-  --color-void: #020205;
-  --color-space: #07060d;
-  --color-nebula: #1a1030;
-  --color-gold: #f2c14e;
-  --color-gold-hi: #fff1c1;
-  --color-ember: #ff7a1a;
-  --color-ice: #9ec5ff;
-  --color-text: #f5f1e8;
-  --color-muted: #a59fb3;
-  --color-line: rgba(255, 255, 255, 0.12);
+  --color-void: #010307;
+  --color-space: #040a14;
+  --color-nebula: #0a1f3d;
+  --color-teal: #0e4a5c;
+  --color-gold: #f4c25c;
+  --color-gold-hi: #fff1c9;
+  --color-ember: #ff8a3d;
+  --color-ice: #9fd3ff;
+  --color-text: #eef1f6;
+  --color-muted: #98a3b8;
+  --color-line: rgba(170, 200, 255, 0.13);
   --color-ok: #4ade80;
 
   --font-gothic: var(--f-cook), "UnifrakturCook", serif;
@@ -29,15 +31,26 @@
 
 :root {
   color-scheme: dark;
-  --gold-grad: linear-gradient(180deg, #fff6d6 10%, #f2c14e 55%, #b06d1a);
+  --estrelas-1: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Ccircle cx='136' cy='63' r='0.73' fill='%23fff' fill-opacity='0.28'/%3E%3Ccircle cx='154' cy='24' r='0.65' fill='%23fff3dc' fill-opacity='0.27'/%3E%3Ccircle cx='176' cy='101' r='0.68' fill='%23fff' fill-opacity='0.28'/%3E%3Ccircle cx='398' cy='265' r='0.69' fill='%23fff3dc' fill-opacity='0.28'/%3E%3Ccircle cx='21' cy='93' r='0.68' fill='%23fff3dc' fill-opacity='0.31'/%3E%3Ccircle cx='61' cy='49' r='0.55' fill='%23dbe8ff' fill-opacity='0.62'/%3E%3Ccircle cx='43' cy='240' r='0.49' fill='%23fff' fill-opacity='0.29'/%3E%3Ccircle cx='237' cy='260' r='0.65' fill='%23cfe6ff' fill-opacity='0.49'/%3E%3Ccircle cx='196' cy='388' r='0.58' fill='%23dbe8ff' fill-opacity='0.36'/%3E%3Ccircle cx='294' cy='103' r='0.69' fill='%23cfe6ff' fill-opacity='0.49'/%3E%3Ccircle cx='306' cy='121' r='0.89' fill='%23fff3dc' fill-opacity='0.30'/%3E%3Ccircle cx='69' cy='144' r='0.87' fill='%23fff' fill-opacity='0.44'/%3E%3Ccircle cx='321' cy='241' r='0.84' fill='%23cfe6ff' fill-opacity='0.39'/%3E%3Ccircle cx='250' cy='244' r='0.63' fill='%23cfe6ff' fill-opacity='0.63'/%3E%3Ccircle cx='199' cy='279' r='0.43' fill='%23fff3dc' fill-opacity='0.57'/%3E%3Ccircle cx='120' cy='162' r='0.73' fill='%23fff3dc' fill-opacity='0.26'/%3E%3Ccircle cx='149' cy='257' r='0.65' fill='%23cfe6ff' fill-opacity='0.35'/%3E%3Ccircle cx='54' cy='104' r='0.60' fill='%23fff' fill-opacity='0.64'/%3E%3Ccircle cx='70' cy='169' r='0.54' fill='%23fff3dc' fill-opacity='0.31'/%3E%3Ccircle cx='363' cy='117' r='0.61' fill='%23fff3dc' fill-opacity='0.41'/%3E%3Ccircle cx='402' cy='63' r='0.49' fill='%23dbe8ff' fill-opacity='0.35'/%3E%3Ccircle cx='5' cy='349' r='0.49' fill='%23dbe8ff' fill-opacity='0.38'/%3E%3Ccircle cx='176' cy='155' r='0.68' fill='%23fff' fill-opacity='0.68'/%3E%3Ccircle cx='192' cy='366' r='0.88' fill='%23fff3dc' fill-opacity='0.56'/%3E%3Ccircle cx='167' cy='166' r='0.64' fill='%23dbe8ff' fill-opacity='0.43'/%3E%3Ccircle cx='28' cy='88' r='0.48' fill='%23fff' fill-opacity='0.40'/%3E%3Ccircle cx='43' cy='238' r='0.67' fill='%23fff' fill-opacity='0.68'/%3E%3Ccircle cx='30' cy='87' r='0.59' fill='%23cfe6ff' fill-opacity='0.54'/%3E%3Ccircle cx='253' cy='199' r='0.46' fill='%23fff3dc' fill-opacity='0.47'/%3E%3Ccircle cx='202' cy='131' r='0.47' fill='%23cfe6ff' fill-opacity='0.59'/%3E%3Ccircle cx='201' cy='291' r='0.66' fill='%23cfe6ff' fill-opacity='0.34'/%3E%3Ccircle cx='62' cy='228' r='0.41' fill='%23fff' fill-opacity='0.49'/%3E%3Ccircle cx='292' cy='110' r='0.58' fill='%23dbe8ff' fill-opacity='0.33'/%3E%3Ccircle cx='224' cy='327' r='0.56' fill='%23dbe8ff' fill-opacity='0.35'/%3E%3Ccircle cx='339' cy='344' r='0.77' fill='%23fff3dc' fill-opacity='0.35'/%3E%3Ccircle cx='149' cy='12' r='0.41' fill='%23cfe6ff' fill-opacity='0.38'/%3E%3Ccircle cx='81' cy='254' r='0.57' fill='%23cfe6ff' fill-opacity='0.61'/%3E%3Ccircle cx='401' cy='153' r='0.51' fill='%23dbe8ff' fill-opacity='0.35'/%3E%3Ccircle cx='142' cy='203' r='0.89' fill='%23fff' fill-opacity='0.52'/%3E%3Ccircle cx='201' cy='274' r='0.80' fill='%23fff' fill-opacity='0.29'/%3E%3Ccircle cx='382' cy='329' r='0.78' fill='%23dbe8ff' fill-opacity='0.47'/%3E%3Ccircle cx='182' cy='267' r='0.44' fill='%23fff3dc' fill-opacity='0.68'/%3E%3Ccircle cx='195' cy='312' r='0.44' fill='%23dbe8ff' fill-opacity='0.32'/%3E%3Ccircle cx='12' cy='248' r='0.63' fill='%23fff3dc' fill-opacity='0.55'/%3E%3Ccircle cx='276' cy='147' r='0.67' fill='%23fff' fill-opacity='0.31'/%3E%3Ccircle cx='336' cy='305' r='0.45' fill='%23dbe8ff' fill-opacity='0.59'/%3E%3C/svg%3E");
+  --estrelas-2: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='760' height='760'%3E%3Ccircle cx='330' cy='663' r='1.30' fill='%23cfe6ff' fill-opacity='0.44'/%3E%3Ccircle cx='162' cy='381' r='1.26' fill='%23fff3dc' fill-opacity='0.50'/%3E%3Ccircle cx='634' cy='46' r='1.24' fill='%23fff3dc' fill-opacity='0.75'/%3E%3Ccircle cx='629' cy='667' r='0.88' fill='%23fff' fill-opacity='0.42'/%3E%3Ccircle cx='663' cy='590' r='1.17' fill='%23dbe8ff' fill-opacity='0.70'/%3E%3Ccircle cx='131' cy='360' r='1.24' fill='%23cfe6ff' fill-opacity='0.60'/%3E%3Ccircle cx='519' cy='403' r='1.09' fill='%23fff' fill-opacity='0.70'/%3E%3Ccircle cx='189' cy='210' r='1.26' fill='%23fff' fill-opacity='0.58'/%3E%3Ccircle cx='578' cy='693' r='1.07' fill='%23dbe8ff' fill-opacity='0.63'/%3E%3Ccircle cx='526' cy='344' r='1.12' fill='%23dbe8ff' fill-opacity='0.57'/%3E%3Ccircle cx='531' cy='666' r='1.37' fill='%23dbe8ff' fill-opacity='0.47'/%3E%3Ccircle cx='638' cy='104' r='0.87' fill='%23fff' fill-opacity='0.55'/%3E%3Ccircle cx='510' cy='326' r='0.93' fill='%23fff' fill-opacity='0.49'/%3E%3Ccircle cx='682' cy='117' r='1.23' fill='%23dbe8ff' fill-opacity='0.65'/%3E%3Ccircle cx='192' cy='104' r='1.08' fill='%23fff' fill-opacity='0.69'/%3E%3Ccircle cx='303' cy='370' r='1.39' fill='%23dbe8ff' fill-opacity='0.72'/%3E%3Ccircle cx='537' cy='755' r='1.04' fill='%23cfe6ff' fill-opacity='0.54'/%3E%3Ccircle cx='242' cy='549' r='0.81' fill='%23fff3dc' fill-opacity='0.60'/%3E%3C/svg%3E");
+  /* ouro metálico: faixa escura no meio, como letra gravada em metal */
+  --gold-grad: linear-gradient(180deg, #fff8e1 6%, #ffe29a 26%, #f0b548 46%, #9a5a17 53%, #e6a33c 60%, #ffe5a3 78%, #c17b22 100%);
   --header-h: 72px;
 }
 
 /* ---------- base ---------- */
+/* fundo fixo do site inteiro: dois campos de estrelas e véus de nebulosa interestelar */
 html {
-  background: var(--color-void);
+  background:
+    radial-gradient(55% 40% at 85% 12%, rgba(14, 74, 92, 0.16), transparent 70%),
+    radial-gradient(60% 45% at 8% 78%, rgba(10, 31, 61, 0.5), transparent 70%),
+    radial-gradient(40% 30% at 60% 55%, rgba(40, 30, 80, 0.12), transparent 70%),
+    var(--estrelas-1),
+    var(--estrelas-2),
+    var(--color-void);
+  background-attachment: fixed;
   -webkit-text-size-adjust: 100%;
-  scrollbar-color: #3a3150 var(--color-void);
+  scrollbar-color: #1d3350 var(--color-void);
 }
 html.lenis-on,
 html.lenis-on body {
@@ -52,7 +65,7 @@ html.lenis-on body {
 body {
   margin: 0;
   min-height: 100svh;
-  background: var(--color-void);
+  background: transparent;
   color: var(--color-text);
   font-family: var(--font-sans);
   font-size: 1.0625rem;
@@ -403,7 +416,7 @@ section[id],
   border-bottom: 1px solid transparent;
 }
 .site-header[data-solid="true"] {
-  background: rgba(4, 3, 9, 0.72);
+  background: rgba(2, 6, 14, 0.72);
   -webkit-backdrop-filter: blur(16px) saturate(140%);
   backdrop-filter: blur(16px) saturate(140%);
   border-color: rgba(255, 255, 255, 0.07);
@@ -490,9 +503,13 @@ html.carregando body {
   opacity: 0;
   transition: all 0.8s var(--ease-in-out-quart);
 }
+.loader-anel {
+  -webkit-mask: linear-gradient(180deg, #000 28%, transparent 40%, transparent 60%, #000 72%);
+  mask: linear-gradient(180deg, #000 28%, transparent 40%, transparent 60%, #000 72%);
+}
 /* o anel se forma girando (só transform: roda no compositor, mesmo com a página ocupada) */
 .loader-ring {
-  fill: rgba(255, 241, 193, 0.7);
+  fill: rgba(255, 236, 196, 0.62);
   animation:
     loaderForma 1.2s var(--ease-out-expo) both,
     loaderSpin 9s linear infinite;
@@ -508,18 +525,77 @@ html.carregando body {
   }
 }
 .loader-name {
-  animation: loaderName 1.1s var(--ease-out-expo) 0.25s both;
+  animation: loaderName 0.9s var(--ease-out-expo) both;
 }
 @keyframes loaderName {
   from {
     opacity: 0;
-    transform: scale(0.6);
-    filter: blur(14px);
+    transform: scale(0.92);
   }
+}
+/* o nome é escrito letra por letra com um traço dourado e depois preenchido em ouro metálico */
+.nome-intro {
+  filter: drop-shadow(0 0 18px rgba(255, 196, 92, 0.28));
+}
+.nome-letras path {
+  fill: url(#nome-ouro);
+  fill-opacity: 0;
+  stroke: #ffe2a0;
+  stroke-width: 0.8;
+  stroke-linejoin: round;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  animation:
+    escreve 0.75s var(--ease-in-out-quart) forwards,
+    preenche 0.5s ease forwards;
+  animation-delay:
+    calc(var(--i) * 45ms + 0.1s),
+    calc(var(--i) * 45ms + 0.6s);
+}
+@keyframes escreve {
   to {
-    opacity: 1;
-    transform: none;
-    filter: none;
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes preenche {
+  to {
+    fill-opacity: 1;
+    stroke-opacity: 0.3;
+  }
+}
+.nome-brilho {
+  mix-blend-mode: overlay;
+  animation: brilhoNome 1.1s var(--ease-in-out-quart) 1.05s forwards;
+}
+@keyframes brilhoNome {
+  to {
+    transform: translateX(680px);
+  }
+}
+/* linha ornamental que se abre a partir da estrela */
+.nome-linha {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--color-gold);
+  font-size: 0.7rem;
+}
+.nome-linha span {
+  display: block;
+  width: min(22vw, 160px);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 214, 140, 0.7));
+  transform: scaleX(0);
+  transform-origin: right;
+  animation: abreLinha 0.9s var(--ease-out-expo) 0.7s forwards;
+}
+.nome-linha span:last-child {
+  background: linear-gradient(270deg, transparent, rgba(255, 214, 140, 0.7));
+  transform-origin: left;
+}
+@keyframes abreLinha {
+  to {
+    transform: scaleX(1);
   }
 }
 
@@ -570,8 +646,8 @@ html.carregando body {
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(120% 75% at 50% 35%, transparent 45%, rgba(2, 2, 5, 0.75) 100%),
-    linear-gradient(180deg, rgba(2, 2, 5, 0.55), transparent 22%, transparent 62%, rgba(2, 2, 5, 0.9));
+    radial-gradient(120% 75% at 50% 35%, transparent 45%, rgba(1, 3, 7, 0.75) 100%),
+    linear-gradient(180deg, rgba(1, 3, 7, 0.55), transparent 22%, transparent 62%, rgba(1, 3, 7, 0.9));
 }
 .hero-void {
   position: absolute;
@@ -597,8 +673,8 @@ html.carregando body {
   height: 100%;
   overflow: visible;
   animation: ringSpin 80s linear infinite;
-  -webkit-mask: linear-gradient(180deg, #000 55%, transparent 74%);
-  mask: linear-gradient(180deg, #000 55%, transparent 74%);
+  -webkit-mask: linear-gradient(180deg, #000 44%, transparent 60%);
+  mask: linear-gradient(180deg, #000 44%, transparent 60%);
 }
 .gothic-ring svg {
   fill: rgba(255, 241, 193, 0.42);
@@ -633,7 +709,7 @@ html.carregando body {
   position: absolute;
   inset: -12% -18% -8%;
   z-index: -1;
-  background: radial-gradient(closest-side, rgba(2, 2, 5, 0.72), rgba(2, 2, 5, 0.35) 60%, transparent);
+  background: radial-gradient(closest-side, rgba(1, 3, 7, 0.72), rgba(1, 3, 7, 0.35) 60%, transparent);
   pointer-events: none;
 }
 /* entrada da interface do hero, depois da intro.
@@ -674,7 +750,7 @@ html.carregando body {
   font: 500 0.68rem/1.4 var(--font-mono);
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(245, 241, 232, 0.55);
+  color: rgba(226, 234, 246, 0.55);
 }
 .scroll-cue {
   width: 1px;
@@ -742,7 +818,7 @@ html.carregando body {
   position: relative;
   overflow: hidden;
   border-radius: 14px;
-  background: #0d0b14;
+  background: #08111f;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 .shot-frame img {
@@ -776,7 +852,7 @@ dialog.case {
   border: 0;
   border-radius: 24px;
   color: var(--color-text);
-  background: #0a0812;
+  background: #06101d;
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.1),
     0 40px 120px -20px rgba(0, 0, 0, 0.9);
@@ -784,7 +860,7 @@ dialog.case {
   overscroll-behavior: contain;
 }
 dialog.case::backdrop {
-  background: rgba(2, 2, 5, 0.72);
+  background: rgba(1, 3, 7, 0.72);
   -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
 }

@@ -26,7 +26,7 @@ export function Sobre() {
       <div className="wrap grid gap-16">
         <div className="grid items-start gap-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-20">
           <figure className="relative mx-auto w-full max-w-[460px]" data-reveal="clip">
-            <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[radial-gradient(80%_70%_at_50%_30%,#2a1b46,#07060d)]">
+            <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[radial-gradient(80%_70%_at_50%_30%,#12305a,#07060d)]">
               <picture>
                 <source type="image/avif" srcSet={`${asset("/foto/retrato-560.avif")} 560w, ${asset("/foto/retrato-1024.avif")} 1024w`} sizes="(max-width: 1024px) 90vw, 460px" />
                 <img
@@ -41,7 +41,7 @@ export function Sobre() {
                   className="aspect-square w-full object-cover"
                 />
               </picture>
-              <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_55%,rgba(2,2,5,.85))]" />
+              <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_55%,rgba(1,3,7,.85))]" />
               <figcaption className="absolute inset-x-0 bottom-0 p-5">
                 <span className="gothic gold-text text-4xl">{CONFIG.nome}</span>
                 <span className="mono mt-1 block text-[0.68rem] tracking-[0.2em] text-muted uppercase">ADS · FMP · Palhoça, SC</span>
