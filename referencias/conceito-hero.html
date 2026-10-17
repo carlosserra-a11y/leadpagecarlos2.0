@@ -1,0 +1,56 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&family=UnifrakturMaguntia&family=Grenze+Gotisch:wght@500..800&family=Inter:wght@400..700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+*{box-sizing:border-box;margin:0}
+body{width:1440px;height:900px;overflow:hidden;background:#020205;color:#f5f1e8;font-family:Inter;position:relative}
+.stars{position:absolute;inset:0;background-image:
+ radial-gradient(1px 1px at 12% 22%,#fff 50%,transparent),radial-gradient(1px 1px at 82% 14%,#fff 50%,transparent),radial-gradient(1.5px 1.5px at 66% 78%,#fff 50%,transparent),
+ radial-gradient(1px 1px at 33% 64%,#cfd8ff 50%,transparent),radial-gradient(1px 1px at 91% 58%,#fff 50%,transparent),radial-gradient(1px 1px at 8% 82%,#fff 50%,transparent),
+ radial-gradient(1px 1px at 48% 9%,#fff 50%,transparent),radial-gradient(1px 1px at 22% 40%,#ffe9b0 50%,transparent),radial-gradient(1px 1px at 74% 36%,#fff 50%,transparent);
+ background-size:420px 420px;opacity:.8}
+.nebula{position:absolute;inset:0;background:radial-gradient(40% 35% at 20% 30%,rgba(90,40,160,.35),transparent 70%),radial-gradient(35% 30% at 85% 75%,rgba(40,80,190,.28),transparent 70%)}
+.bh{position:absolute;left:50%;top:33%;width:900px;height:900px;transform:translate(-50%,-50%)}
+.disk{position:absolute;left:50%;top:50%;width:880px;height:250px;transform:translate(-50%,-50%) rotate(-8deg);border-radius:50%;
+ background:conic-gradient(from 90deg,#ff7a1a,#f2c14e,#fff1c1,#f2c14e,#9ec5ff,#f2c14e,#ff7a1a);filter:blur(6px);opacity:.95;
+ -webkit-mask:radial-gradient(closest-side,transparent 34%,#000 38%,#000 72%,transparent 100%);mask:radial-gradient(closest-side,transparent 34%,#000 38%,#000 72%,transparent 100%)}
+.halo{position:absolute;left:50%;top:50%;width:430px;height:430px;transform:translate(-50%,-50%);border-radius:50%;
+ background:radial-gradient(circle,transparent 46%,rgba(255,236,170,.9) 49%,rgba(242,193,78,.5) 53%,transparent 64%);filter:blur(2px)}
+.core{position:absolute;left:50%;top:50%;width:330px;height:330px;transform:translate(-50%,-50%);border-radius:50%;background:#000;box-shadow:0 0 60px 14px rgba(0,0,0,.95)}
+.arc{position:absolute;left:50%;top:50%;width:880px;height:250px;transform:translate(-50%,-50%) rotate(-8deg);border-radius:50%;
+ background:conic-gradient(from 270deg,transparent 0 25%,#fff1c1 40%,#f2c14e 50%,transparent 60%);filter:blur(5px);
+ -webkit-mask:radial-gradient(closest-side,transparent 34%,#000 38%,#000 72%,transparent 100%);mask:radial-gradient(closest-side,transparent 34%,#000 38%,#000 72%,transparent 100%);z-index:3}
+svg.ring{position:absolute;left:50%;top:50%;width:560px;height:560px;transform:translate(-50%,-50%) rotate(-20deg);z-index:2;-webkit-mask:linear-gradient(170deg,#000 50%,transparent 66%);mask:linear-gradient(170deg,#000 50%,transparent 66%)}
+svg.ring text{font-family:UnifrakturMaguntia;font-size:27px;fill:rgba(255,241,193,.42);letter-spacing:4px}
+.ui{position:absolute;left:50%;top:57%;transform:translate(-50%,-34%);z-index:5;display:grid;justify-items:center;gap:18px;text-align:center;width:900px}
+.badge{display:inline-flex;align-items:center;gap:10px;padding:9px 16px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.15);backdrop-filter:blur(12px);font:500 14px Inter;color:#e9e3d6}
+.badge i{width:8px;height:8px;border-radius:50%;background:#34d399;box-shadow:0 0 0 4px rgba(52,211,153,.18)}
+h1{font:700 140px/.95 UnifrakturCook;background:linear-gradient(180deg,#fff6d6 10%,#f2c14e 55%,#b06d1a);-webkit-background-clip:text;color:transparent;filter:drop-shadow(0 8px 40px rgba(242,193,78,.25))}
+.role{font:500 14px 'JetBrains Mono';letter-spacing:.18em;text-transform:uppercase;color:#cbbfa3}
+.tag{font:700 34px 'Grenze Gotisch';color:#f5f1e8;letter-spacing:-.01em}
+.sub{font:400 18px/1.6 Inter;color:#b9b1c6;max-width:560px}
+.ctas{display:flex;gap:14px;margin-top:6px}
+.b1{padding:15px 28px;border-radius:999px;background:linear-gradient(180deg,#ffd77a,#e9a92e);color:#1a1205;font:700 16px Inter;box-shadow:0 12px 40px -10px rgba(242,193,78,.8)}
+.b2{padding:15px 28px;border-radius:999px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.04);backdrop-filter:blur(10px);font:600 16px Inter}
+.b3{padding:15px 8px;font:500 15px Inter;color:#cbbfa3;text-decoration:underline;text-underline-offset:5px}
+.hud{position:absolute;font:500 11px 'JetBrains Mono';letter-spacing:.12em;text-transform:uppercase;color:#7d7590}
+.top{position:absolute;left:0;right:0;top:0;display:flex;justify-content:space-between;align-items:center;padding:26px 48px;z-index:6}
+.logo{display:flex;align-items:center;gap:12px;font:700 26px UnifrakturCook;color:#f5f1e8}
+.logo span{display:grid;place-items:center;width:42px;height:42px;border-radius:50%;border:1.5px solid rgba(242,193,78,.8);font-size:20px;color:#f2c14e;box-shadow:inset 0 0 12px rgba(242,193,78,.3)}
+nav{display:flex;gap:28px;font:500 13px 'JetBrains Mono';letter-spacing:.1em;text-transform:uppercase;color:#b9b1c6}
+</style></head><body>
+<div class="stars"></div><div class="nebula"></div>
+<div class="top"><div class="logo"><span>CS</span>Carlos Serra</div><nav><a>Projetos</a><a>Serviços</a><a>Sobre</a><a>Contato</a></nav></div>
+<div class="bh"><div class="disk"></div><div class="halo"></div>
+<svg class="ring" viewBox="0 0 560 560"><defs><path id="c" d="M280,280 m-245,0 a245,245 0 1,1 490,0 a245,245 0 1,1 -490,0"/></defs><text><textPath href="#c">A B C D E F G H I J K L M N O P Q R S T U V W X Y Z ✦ a b c d e f g h i j k l m</textPath></text></svg>
+<div class="core"></div><div class="arc"></div></div>
+<div class="ui">
+  <p class="badge"><i></i>✦ Disponível para estágio, vaga júnior e novos projetos</p>
+  <h1>Carlos Serra</h1>
+  <p class="role">Desenvolvedor Full Stack Júnior · Palhoça, SC</p>
+  <p class="tag">A gravidade inevitável do seu negócio</p>
+  <p class="sub">Sites e sistemas que puxam clientes direto para o seu WhatsApp, com 3D, banco de dados e IA quando faz sentido.</p>
+  <div class="ctas"><span class="b1">Quero um site</span><span class="b2">Ver projetos</span><span class="b3">Sou recrutador →</span></div>
+</div>
+<p class="hud" style="left:48px;bottom:30px">27°38′S 48°40′W · Palhoça</p>
+<p class="hud" style="right:48px;bottom:30px">RA 17h45m · DEC −29° · 14:32 BRT</p>
+</body></html>
