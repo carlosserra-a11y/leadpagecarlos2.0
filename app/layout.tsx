@@ -1,11 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import {
-  Grenze_Gotisch,
-  Inter,
-  JetBrains_Mono,
-  Manufacturing_Consent,
-  UnifrakturCook,
-} from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { CONFIG, TEXTOS, ghLink } from "@/lib/dados";
 import { BASE } from "@/lib/asset";
@@ -19,14 +13,15 @@ import { Toaster } from "@/components/ui/Toaster";
 import { RevealObserver } from "@/components/ui/RevealObserver";
 import { SkipLink } from "@/components/layout/SkipLink";
 
-/* Fontes góticas das referências do Carlos, servidas pelo próprio site
-   (o alfabeto em círculo, UnifrakturMaguntia, vai em contorno: public/hero/anel.svg) */
-const cook = UnifrakturCook({ weight: "700", subsets: ["latin"], variable: "--f-cook", display: "swap" });
-const consent = Manufacturing_Consent({ weight: "400", subsets: ["latin"], variable: "--f-consent", display: "swap", preload: false });
+/* Fontes góticas das referências do Carlos, guardadas no repositório (app/fontes, subconjunto latino):
+   o build não depende do Google Fonts e o navegador não pede nada a terceiros.
+   O alfabeto em círculo (UnifrakturMaguntia) vai em contorno: public/hero/anel.svg */
+const cook = localFont({ src: "./fontes/unifrakturcook-700.woff2", weight: "700", variable: "--f-cook", display: "swap", adjustFontFallback: "Times New Roman" });
+const consent = localFont({ src: "./fontes/manufacturing-consent-400.woff2", weight: "400", variable: "--f-consent", display: "swap", preload: false, adjustFontFallback: "Times New Roman" });
 // só o que aparece logo de cara é pré-carregado (nome em gótica e texto); o resto chega sem bloquear
-const grenze = Grenze_Gotisch({ weight: "700", subsets: ["latin"], variable: "--f-grenze", display: "swap", preload: false });
-const inter = Inter({ subsets: ["latin"], variable: "--f-inter", display: "swap" });
-const mono = JetBrains_Mono({ weight: ["400", "500", "600"], subsets: ["latin"], variable: "--f-mono", display: "swap", preload: false });
+const grenze = localFont({ src: "./fontes/grenze-gotisch-700.woff2", weight: "700", variable: "--f-grenze", display: "swap", preload: false, adjustFontFallback: "Times New Roman" });
+const inter = localFont({ src: "./fontes/inter-var.woff2", weight: "400 700", variable: "--f-inter", display: "swap" });
+const mono = localFont({ src: "./fontes/jetbrains-mono-var.woff2", weight: "400 600", variable: "--f-mono", display: "swap", preload: false, adjustFontFallback: false });
 
 const t = TEXTOS.pt;
 const URL_SITE = CONFIG.siteUrl;

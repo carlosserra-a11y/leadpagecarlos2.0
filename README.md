@@ -81,8 +81,8 @@ Configuração do GitHub Pages (uma vez só): **Settings → Pages → Build and
   - Toda a cena carrega só depois da primeira interação; até lá aparece um pôster tirado da própria cena.
   - A qualidade se ajusta ao aparelho (1500, 700 ou 350 fragmentos) e cai sozinha se o FPS ficar baixo.
   - Sem WebGL ou com "reduzir movimento", fica o pôster.
-- **Desempenho medido no Lighthouse.** Computador: 95 de desempenho; 100 em acessibilidade, boas práticas e SEO. Celular (4G lento simulado): ~82 de desempenho; 100 nos outros três.
-- **Segurança.** A CSP vai numa `<meta>` com o hash de cada script do build (`ferramentas/csp.mjs`), sem scripts de terceiros e com as fontes servidas pelo próprio site. Links externos usam `noopener`.
+- **Desempenho medido no Lighthouse.** Computador: 96 de desempenho; 100 em acessibilidade, boas práticas e SEO. Celular (4G lento simulado): ~82 de desempenho; 100 nos outros três.
+- **Segurança.** A CSP vai numa `<meta>` com o hash de cada script do build (`ferramentas/csp.mjs`), sem scripts de terceiros. As fontes ficam no próprio repositório (`app/fontes`), então o build não depende do Google Fonts. Links externos usam `noopener`.
 - **Acessibilidade.**
   - Um `h1` só, foco dourado visível e tudo navegável por teclado.
   - O modal prende o foco e o devolve a quem abriu.

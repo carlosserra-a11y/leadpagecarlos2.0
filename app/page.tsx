@@ -4,6 +4,7 @@ import { Servicos } from "@/components/sections/Servicos";
 import { Processo } from "@/components/sections/Processo";
 import { Stack } from "@/components/sections/Stack";
 import { Sobre } from "@/components/sections/Sobre";
+import { Depoimentos } from "@/components/sections/Depoimentos";
 import { Contato } from "@/components/sections/contato/Contato";
 import { QrWhatsapp } from "@/components/sections/contato/QrWhatsapp";
 import { reposNovos } from "@/lib/github";
@@ -18,6 +19,7 @@ export default async function Home() {
       <Processo />
       <Stack />
       <Sobre />
+      <Depoimentos />
       <Contato qr={<QrWhatsapp />} />
     </>
   );
