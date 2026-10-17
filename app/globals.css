@@ -1,0 +1,1005 @@
+@import "tailwindcss";
+
+/* =========================================================================
+   Gótico Cósmico · tokens, base e componentes que o Tailwind não cobre
+   ========================================================================= */
+
+@theme {
+  --color-void: #020205;
+  --color-space: #07060d;
+  --color-nebula: #1a1030;
+  --color-gold: #f2c14e;
+  --color-gold-hi: #fff1c1;
+  --color-ember: #ff7a1a;
+  --color-ice: #9ec5ff;
+  --color-text: #f5f1e8;
+  --color-muted: #a59fb3;
+  --color-line: rgba(255, 255, 255, 0.12);
+  --color-ok: #4ade80;
+
+  --font-gothic: var(--f-cook), "UnifrakturCook", serif;
+  --font-gothic-alt: var(--f-consent), "Manufacturing Consent", serif;
+  --font-title: var(--f-grenze), "Grenze Gotisch", serif;
+  --font-sans: var(--f-inter), "Inter", system-ui, sans-serif;
+  --font-mono: var(--f-mono), "JetBrains Mono", ui-monospace, monospace;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+:root {
+  color-scheme: dark;
+  --gold-grad: linear-gradient(180deg, #fff6d6 10%, #f2c14e 55%, #b06d1a);
+  --header-h: 72px;
+}
+
+/* ---------- base ---------- */
+html {
+  background: var(--color-void);
+  -webkit-text-size-adjust: 100%;
+  scrollbar-color: #3a3150 var(--color-void);
+}
+html.lenis-on,
+html.lenis-on body {
+  height: auto;
+}
+.lenis-on.lenis-stopped {
+  overflow: clip;
+}
+.lenis-on.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+body {
+  margin: 0;
+  min-height: 100svh;
+  background: var(--color-void);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+::selection {
+  background: rgba(242, 193, 78, 0.35);
+  color: #fff;
+}
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+img,
+svg,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+a {
+  color: inherit;
+}
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+[hidden] {
+  display: none !important;
+}
+section[id],
+[id].anchor {
+  scroll-margin-top: calc(var(--header-h) + 8px);
+}
+
+/* ---------- tipografia ---------- */
+.gothic {
+  font-family: var(--font-gothic);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 0.95;
+}
+.gold-text {
+  background: var(--gold-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+.title {
+  font-family: var(--font-title);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.02;
+  text-wrap: balance;
+}
+.kicker {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+}
+.mono {
+  font-family: var(--font-mono);
+}
+.lede {
+  color: var(--color-muted);
+  max-width: 62ch;
+  text-wrap: pretty;
+}
+
+/* ---------- layout ---------- */
+.wrap {
+  width: min(1240px, 100% - 2 * clamp(16px, 4vw, 40px));
+  margin-inline: auto;
+}
+.section {
+  position: relative;
+  padding-block: clamp(88px, 12vw, 160px);
+}
+
+/* ---------- vidro ---------- */
+.glass {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.025));
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 20px 60px -30px rgba(0, 0, 0, 0.8);
+}
+.glass-gold {
+  position: relative;
+  isolation: isolate;
+}
+.glass-gold::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(140deg, rgba(255, 241, 193, 0.55), rgba(242, 193, 78, 0.05) 35%, rgba(158, 197, 255, 0.25));
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ---------- botões ---------- */
+.btn {
+  --mx: 0px;
+  --my: 0px;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 48px;
+  padding: 0 1.4rem;
+  border-radius: 999px;
+  font: 600 0.98rem/1 var(--font-sans);
+  text-decoration: none;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  transform: translate3d(var(--mx), var(--my), 0);
+  transition:
+    transform 0.5s var(--ease-out-expo),
+    background-color 0.25s,
+    border-color 0.25s,
+    box-shadow 0.35s,
+    color 0.25s;
+  overflow: hidden;
+  isolation: isolate;
+}
+.btn-gold {
+  color: #1b1204;
+  background: linear-gradient(180deg, #ffe7a3, #f2c14e 55%, #d99a2b);
+  box-shadow:
+    0 0 0 1px rgba(255, 241, 193, 0.4) inset,
+    0 10px 40px -10px rgba(242, 193, 78, 0.65);
+}
+.btn-gold::after {
+  /* brilho que corre pelo botão */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.75) 48%, transparent 66%);
+  transform: translateX(-120%);
+  transition: transform 0.9s var(--ease-out-expo);
+  z-index: -1;
+}
+.btn-gold:hover {
+  box-shadow:
+    0 0 0 1px rgba(255, 241, 193, 0.6) inset,
+    0 14px 50px -8px rgba(242, 193, 78, 0.85);
+}
+.btn-gold:hover::after {
+  transform: translateX(120%);
+}
+.btn-ghost {
+  color: var(--color-text);
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.04);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+.btn-ghost:hover {
+  border-color: rgba(255, 241, 193, 0.6);
+  background: rgba(255, 241, 193, 0.08);
+}
+.btn-sm {
+  min-height: 44px;
+  padding: 0 1rem;
+  font-size: 0.9rem;
+}
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 44px;
+  font-weight: 500;
+  color: var(--color-gold-hi);
+  text-decoration: underline;
+  text-decoration-color: rgba(242, 193, 78, 0.45);
+  text-underline-offset: 0.3em;
+  transition: text-decoration-color 0.2s, color 0.2s;
+}
+.link-arrow:hover {
+  color: #fff;
+  text-decoration-color: var(--color-gold);
+}
+.link-arrow svg {
+  transition: transform 0.35s var(--ease-out-expo);
+}
+.link-arrow:hover svg {
+  transform: translate(3px, -1px);
+}
+
+/* chips (filtros e formulário) */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 40px;
+  padding: 0 0.95rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.03);
+  font-size: 0.9rem;
+  color: var(--color-muted);
+  transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+}
+.chip:hover {
+  border-color: rgba(255, 241, 193, 0.45);
+  color: var(--color-text);
+}
+.chip[aria-pressed="true"],
+.chip[aria-checked="true"] {
+  color: #1b1204;
+  background: var(--color-gold);
+  border-color: var(--color-gold);
+}
+.chip .n {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+}
+
+.chip-radio {
+  cursor: pointer;
+}
+.chip-radio input:checked + .chip {
+  color: #1b1204;
+  background: var(--color-gold);
+  border-color: var(--color-gold);
+}
+.chip-radio input:focus-visible + .chip {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.28rem 0.6rem;
+  border-radius: 6px;
+  font: 500 0.74rem/1.2 var(--font-mono);
+  letter-spacing: 0.02em;
+  color: var(--color-gold-hi);
+  background: rgba(242, 193, 78, 0.08);
+  border: 1px solid rgba(242, 193, 78, 0.22);
+}
+
+/* ponto "disponível" */
+.pulse-dot {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-ok);
+  flex: none;
+}
+.pulse-dot::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid var(--color-ok);
+  animation: pulse 2.2s var(--ease-out-expo) infinite;
+}
+@keyframes pulse {
+  from {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  to {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+/* =========================================================================
+   Revelações na rolagem: só com JS (sem JS tudo aparece)
+   ========================================================================= */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+  transition:
+    opacity 0.9s var(--ease-out-expo),
+    transform 1.1s var(--ease-out-expo);
+  transition-delay: calc(var(--d, 0) * 80ms);
+}
+.js [data-reveal].in {
+  opacity: 1;
+  transform: none;
+}
+.js [data-reveal="clip"] {
+  opacity: 1;
+  transform: none;
+  clip-path: inset(18% 8% 18% 8% round 24px);
+  transition: clip-path 1.3s var(--ease-out-expo);
+}
+.js [data-reveal="clip"].in {
+  clip-path: inset(0 0 0 0 round 20px);
+}
+/* títulos sobem palavra por palavra, com máscara */
+.words .w {
+  display: inline-block;
+  overflow: clip;
+  overflow-clip-margin: 0.2em;
+  vertical-align: top;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.words .w > span {
+  display: inline-block;
+}
+.js .words .w > span {
+  transform: translate3d(0, 105%, 0);
+  transition: transform 1s var(--ease-out-expo);
+  transition-delay: calc(var(--i, 0) * 55ms);
+}
+.js .words.in .w > span {
+  transform: none;
+}
+
+/* =========================================================================
+   Cabeçalho
+   ========================================================================= */
+.site-header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 50;
+  height: var(--header-h);
+  transition:
+    background-color 0.4s,
+    border-color 0.4s,
+    opacity 0.4s,
+    transform 0.5s var(--ease-out-expo);
+  border-bottom: 1px solid transparent;
+}
+.site-header[data-solid="true"] {
+  background: rgba(4, 3, 9, 0.72);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  backdrop-filter: blur(16px) saturate(140%);
+  border-color: rgba(255, 255, 255, 0.07);
+}
+.site-header[data-hide="true"] {
+  transform: translateY(-110%);
+  opacity: 0;
+  pointer-events: none;
+}
+.nav-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 0.2rem;
+  font: 500 0.78rem/1 var(--font-mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  height: 1px;
+  background: var(--color-gold);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.45s var(--ease-out-expo);
+}
+.nav-link:hover,
+.nav-link[aria-current="true"] {
+  color: var(--color-text);
+}
+.nav-link:hover::after,
+.nav-link[aria-current="true"]::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* =========================================================================
+   Loader
+   ========================================================================= */
+.loader {
+  display: none;
+}
+html.carregando .loader {
+  display: grid;
+}
+html.carregando body {
+  overflow: hidden;
+}
+/* a cortina se abre em círculo a partir do centro, como se a página saísse do buraco negro */
+@property --abre {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+.loader {
+  --abre: 0px;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  place-items: center;
+  background: var(--color-void);
+  -webkit-mask: radial-gradient(circle at 50% 42%, transparent var(--abre), #000 calc(var(--abre) + 1px));
+  mask: radial-gradient(circle at 50% 42%, transparent var(--abre), #000 calc(var(--abre) + 1px));
+  transition:
+    --abre 0.85s var(--ease-in-out-quart),
+    opacity 0.3s ease 0.6s;
+}
+.loader[data-saindo="true"] {
+  --abre: 150vmax;
+  opacity: 0;
+}
+.loader[data-saindo="true"] .loader-name {
+  animation: none;
+  transform: scale(1.6);
+  filter: blur(8px);
+  opacity: 0;
+  transition: all 0.8s var(--ease-in-out-quart);
+}
+/* o anel se forma girando (só transform: roda no compositor, mesmo com a página ocupada) */
+.loader-ring {
+  fill: rgba(255, 241, 193, 0.7);
+  animation:
+    loaderForma 1.2s var(--ease-out-expo) both,
+    loaderSpin 9s linear infinite;
+}
+@keyframes loaderForma {
+  from {
+    transform: scale(0.72) rotate(-90deg);
+  }
+}
+@keyframes loaderSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.loader-name {
+  animation: loaderName 1.1s var(--ease-out-expo) 0.25s both;
+}
+@keyframes loaderName {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+    filter: blur(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+/* =========================================================================
+   Hero
+   ========================================================================= */
+.hero-track {
+  position: relative;
+  height: 100svh;
+}
+.js .hero-track[data-dolly="true"] {
+  height: 190svh;
+}
+.hero-stage {
+  --bh-y: 0.34;
+  --ring-s: 0.84;
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  min-height: 560px;
+  overflow: hidden;
+  isolation: isolate;
+}
+.hero-poster {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background: var(--color-void);
+}
+.hero-poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 32%;
+}
+.hero-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 1.4s ease;
+}
+.hero-canvas[data-pronto="true"] {
+  opacity: 1;
+}
+.hero-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 75% at 50% 35%, transparent 45%, rgba(2, 2, 5, 0.75) 100%),
+    linear-gradient(180deg, rgba(2, 2, 5, 0.55), transparent 22%, transparent 62%, rgba(2, 2, 5, 0.9));
+}
+.hero-void {
+  position: absolute;
+  inset: 0;
+  background: var(--color-void);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+.gothic-ring {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--bh-y) * 100%);
+  width: 560px;
+  height: 560px;
+  margin: -280px 0 0 -280px;
+  pointer-events: none;
+  transform: scale(var(--ring-s));
+  will-change: transform;
+}
+.gothic-ring svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  animation: ringSpin 80s linear infinite;
+  -webkit-mask: linear-gradient(180deg, #000 55%, transparent 74%);
+  mask: linear-gradient(180deg, #000 55%, transparent 74%);
+}
+.gothic-ring svg {
+  fill: rgba(255, 241, 193, 0.42);
+}
+@keyframes ringSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (max-width: 767px) {
+  .hero-stage {
+    --bh-y: 0.27;
+    --ring-s: 0.6;
+  }
+}
+@media (max-height: 760px) and (min-width: 768px) {
+  .hero-stage {
+    --bh-y: 0.3;
+    --ring-s: 0.7;
+  }
+}
+.hero-h1 {
+  font-size: clamp(3.4rem, min(13.5vw, 16svh), 9.6rem);
+  filter: drop-shadow(0 10px 50px rgba(242, 193, 78, 0.3));
+}
+/* sombra suave atrás do texto do hero: o disco passa por trás sem atrapalhar a leitura */
+.hero-ui {
+  position: relative;
+}
+.hero-ui::before {
+  content: "";
+  position: absolute;
+  inset: -12% -18% -8%;
+  z-index: -1;
+  background: radial-gradient(closest-side, rgba(2, 2, 5, 0.72), rgba(2, 2, 5, 0.35) 60%, transparent);
+  pointer-events: none;
+}
+/* entrada da interface do hero, depois da intro.
+   Sem opacidade zero: o texto já fica pintado por baixo da intro (conta para o LCP)
+   e entra em foco com desfoque + movimento. */
+.js .hero-ui > * {
+  transform: translate3d(0, 18px, 0);
+  filter: blur(10px);
+  transition:
+    transform 0.8s var(--ease-out-expo),
+    filter 0.7s var(--ease-out-expo);
+  transition-delay: calc(var(--i, 0) * 60ms);
+}
+.js .hero-ui[data-in="true"] > * {
+  transform: none;
+  filter: blur(0);
+}
+/* o nome tem também o brilho dourado em volta */
+.js .hero-ui > h1 {
+  transform: scale(0.94);
+  filter: blur(16px) drop-shadow(0 10px 50px rgba(242, 193, 78, 0.3));
+}
+.js .hero-ui[data-in="true"] > h1 {
+  transform: none;
+  filter: blur(0) drop-shadow(0 10px 50px rgba(242, 193, 78, 0.3));
+}
+/* rede de segurança: se o JS falhar, tudo aparece sozinho */
+.js .hero-ui:not([data-in="true"]) > * {
+  animation: aparece 0.6s ease 4.6s forwards;
+}
+@keyframes aparece {
+  to {
+    transform: none;
+    filter: none;
+  }
+}
+.hud {
+  font: 500 0.68rem/1.4 var(--font-mono);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(245, 241, 232, 0.55);
+}
+.scroll-cue {
+  width: 1px;
+  height: 42px;
+  background: linear-gradient(180deg, transparent, var(--color-gold));
+  transform-origin: top;
+  animation: cue 2.2s var(--ease-in-out-quart) infinite;
+}
+@keyframes cue {
+  0% {
+    transform: scaleY(0);
+  }
+  50% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  51% {
+    transform-origin: bottom;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+}
+
+/* =========================================================================
+   Projetos
+   ========================================================================= */
+.galaxy-track {
+  position: relative;
+}
+.galaxy-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+}
+.carousel {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min(86%, 420px);
+  gap: 16px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: clamp(16px, 4vw, 40px);
+  padding: 8px clamp(16px, 4vw, 40px) 24px;
+  scrollbar-width: none;
+}
+.carousel::-webkit-scrollbar {
+  display: none;
+}
+.carousel > * {
+  scroll-snap-align: start;
+}
+@media (min-width: 1024px) {
+  .carousel[data-grid="true"] {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(3, 1fr);
+    overflow: visible;
+    padding-inline: 0;
+  }
+}
+.shot-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #0d0b14;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.shot-frame img {
+  width: 100%;
+  height: auto;
+  transition: transform 1.2s var(--ease-out-expo);
+}
+
+.js .arquivo-lista[data-recolhida="true"] > li:nth-child(n + 9) {
+  display: none;
+}
+
+/* painel da galáxia: cada projeto entra com desfoque */
+.painel-entra {
+  animation: painelEntra 0.55s var(--ease-out-expo) both;
+}
+@keyframes painelEntra {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 22px, 0);
+    filter: blur(8px);
+  }
+}
+
+/* modal do estudo de caso */
+dialog.case {
+  width: min(1080px, 100% - 24px);
+  max-height: min(92svh, 1000px);
+  margin: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 24px;
+  color: var(--color-text);
+  background: #0a0812;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 40px 120px -20px rgba(0, 0, 0, 0.9);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+dialog.case::backdrop {
+  background: rgba(2, 2, 5, 0.72);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+dialog.case[open] {
+  animation: caseIn 0.6s var(--ease-out-expo);
+}
+dialog.case[open]::backdrop {
+  animation: fadeIn 0.4s ease;
+}
+@keyframes caseIn {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+}
+
+/* =========================================================================
+   Processo: a órbita que vai sendo traçada
+   ========================================================================= */
+.orbit-dot::after {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  transition:
+    background-color 0.5s,
+    box-shadow 0.5s,
+    inset 0.5s var(--ease-out-expo);
+}
+.orbit-step[data-on="true"] .orbit-dot {
+  border-color: rgba(255, 241, 193, 0.7);
+  box-shadow: 0 0 22px rgba(242, 193, 78, 0.35);
+}
+.orbit-step[data-on="true"] .orbit-dot::after {
+  inset: 11px;
+  background: var(--color-gold);
+  box-shadow: 0 0 14px rgba(242, 193, 78, 0.9);
+}
+.orbit-step[data-on="true"] .orbit-n {
+  color: var(--color-gold);
+}
+.orbit-dot,
+.orbit-n {
+  transition:
+    border-color 0.5s,
+    box-shadow 0.5s,
+    color 0.5s;
+}
+
+/* =========================================================================
+   Stack: constelações
+   ========================================================================= */
+.constel line {
+  stroke: rgba(242, 193, 78, 0.45);
+  stroke-width: 1;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition:
+    stroke-dashoffset 1.1s var(--ease-out-expo),
+    stroke 0.3s;
+  transition-delay: calc(var(--i, 0) * 90ms + 200ms);
+}
+.constel circle {
+  fill: var(--color-gold-hi);
+  transition: fill 0.3s;
+}
+/* sem JS as linhas já aparecem; com JS elas se ligam quando o cartão entra na tela */
+html:not(.js) .constel line,
+.constel-card.in .constel line {
+  stroke-dashoffset: 0;
+}
+.constel-card:hover .constel line,
+.constel-card:focus-within .constel line {
+  stroke: rgba(255, 241, 193, 0.95);
+}
+.constel-card:hover .constel circle,
+.constel-card:focus-within .constel circle {
+  fill: #fff;
+}
+
+/* =========================================================================
+   Rodapé: nome gigante que acende onde o mouse passa
+   ========================================================================= */
+.giant {
+  position: relative;
+  font-family: var(--font-gothic-alt);
+  font-size: clamp(4rem, 19vw, 17rem);
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  text-align: center;
+  user-select: none;
+}
+.giant .outline {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(242, 193, 78, 0.35);
+}
+@property --x {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 50%;
+}
+@property --r {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+.giant .lit {
+  position: absolute;
+  inset: 0;
+  background: var(--gold-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  --y: 50%;
+  -webkit-mask: radial-gradient(circle var(--r) at var(--x) var(--y), #000 30%, transparent 100%);
+  mask: radial-gradient(circle var(--r) at var(--x) var(--y), #000 30%, transparent 100%);
+  transition: --r 0.5s var(--ease-out-expo);
+}
+/* sem mouse: uma luz passa sozinha pelo nome */
+.giant[data-auto="true"] .lit {
+  --r: 140px;
+  animation: varre 7s ease-in-out infinite alternate;
+}
+@keyframes varre {
+  from {
+    --x: 8%;
+  }
+  to {
+    --x: 92%;
+  }
+}
+
+/* cursor: anel que segue o mouse */
+.cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 90;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 241, 193, 0.6);
+  pointer-events: none;
+  transition:
+    width 0.35s var(--ease-out-expo),
+    height 0.35s var(--ease-out-expo),
+    margin 0.35s var(--ease-out-expo),
+    background-color 0.3s,
+    border-color 0.3s,
+    opacity 0.3s;
+  mix-blend-mode: difference;
+}
+.cursor[data-hover="true"] {
+  width: 64px;
+  height: 64px;
+  margin: -32px 0 0 -32px;
+  background: rgba(255, 241, 193, 0.12);
+  border-color: rgba(255, 241, 193, 0.9);
+}
+
+/* toasts */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: max(20px, env(safe-area-inset-bottom));
+  z-index: 95;
+  transform: translateX(-50%);
+  max-width: min(520px, 100% - 32px);
+}
+
+/* sem JS: esconde o que só funciona com JS e mostra a alternativa */
+html:not(.js) .needs-js {
+  display: none !important;
+}
+.js .no-js-only {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .js [data-reveal],
+  .js .words .w > span {
+    opacity: 1;
+    transform: none;
+    clip-path: none;
+  }
+}
+
+@media print {
+  .site-header,
+  .loader,
+  .hero-canvas,
+  .gothic-ring,
+  .cursor,
+  .needs-js {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+    color: #000;
+  }
+}

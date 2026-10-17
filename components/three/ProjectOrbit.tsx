@@ -1,0 +1,217 @@
+"use client";
+
+import { Suspense, useEffect, useMemo, useRef, useState, type RefObject } from "react";
+import { Canvas, useFrame, useThree, type ThreeEvent } from "@react-three/fiber";
+import { RoundedBox, useTexture } from "@react-three/drei";
+import { Bloom, EffectComposer } from "@react-three/postprocessing";
+import * as THREE from "three";
+import { asset } from "@/lib/asset";
+import { PROJETOS } from "@/lib/dados";
+import type { Tier } from "@/lib/useDeviceTier";
+import type { Progresso } from "@/components/sections/projetos/Galaxia";
+import { heroState } from "@/components/hero/heroState";
+import { AnelDeFotons, DiscoDeGas, Estrelas, damp, type Fase, type Q } from "./partes";
+
+const N = PROJETOS.length;
+const PASSO = (Math.PI * 2) / N;
+const W = 2.4; // monólito 16:10, como as capturas
+const H = 1.5;
+const RX = 3.5; // órbita elíptica
+const RZ = 2.7;
+
+type Props = { prog: RefObject<Progresso>; ativo: number; tier: Tier | null; onPick: (i: number) => void };
+
+/* Um monólito de vidro escuro com a captura do site na frente e borda dourada que acende */
+function Monolito({ i, tex, ativo, hover, setHover, onPick }: { i: number; tex: THREE.Texture; ativo: boolean; hover: boolean; setHover: (i: number | null) => void; onPick: (i: number) => void }) {
+  const grupo = useRef<THREE.Group>(null);
+  const tela = useRef<THREE.MeshBasicMaterial>(null);
+  const borda = useRef<THREE.LineBasicMaterial>(null);
+  const bordaGeo = useMemo(() => new THREE.EdgesGeometry(new THREE.BoxGeometry(W + 0.06, H + 0.06, 0.1)), []);
+  const cor = useMemo(() => new THREE.Color(PROJETOS[i].cor), [i]);
+
+  useFrame((_, dtRaw) => {
+    const dt = Math.min(dtRaw, 0.1);
+    const g = grupo.current;
+    if (!g) return;
+    const aceso = ativo || hover;
+    // hover inclina, o ativo vem um pouco para frente
+    g.rotation.x = damp(g.rotation.x, hover ? -0.08 : 0, 6, dt);
+    g.rotation.z = damp(g.rotation.z, hover ? 0.03 : 0, 6, dt);
+    const s = damp(g.scale.x, ativo ? 1.1 : hover ? 1.04 : 0.92, 5, dt);
+    g.scale.setScalar(s);
+    if (tela.current) {
+      const b = damp(tela.current.color.r, ativo ? 1 : hover ? 0.85 : 0.42, 5, dt);
+      tela.current.color.setScalar(b);
+    }
+    if (borda.current) borda.current.opacity = damp(borda.current.opacity, aceso ? 1 : 0.18, 6, dt);
+  });
+
+  return (
+    <group ref={grupo}>
+      <RoundedBox
+        args={[W + 0.08, H + 0.08, 0.08]}
+        radius={0.04}
+        smoothness={3}
+        onPointerOver={(e: ThreeEvent<PointerEvent>) => {
+          e.stopPropagation();
+          setHover(i);
+          document.body.style.cursor = "pointer";
+        }}
+        onPointerOut={() => {
+          setHover(null);
+          document.body.style.cursor = "";
+        }}
+        onClick={(e: ThreeEvent<MouseEvent>) => {
+          e.stopPropagation();
+          onPick(i);
+        }}
+      >
+        <meshStandardMaterial color="#0b0912" metalness={0.7} roughness={0.28} emissive={cor} emissiveIntensity={0.04} />
+      </RoundedBox>
+      <mesh position={[0, 0, 0.045]}>
+        <planeGeometry args={[W, H]} />
+        <meshBasicMaterial ref={tela} map={tex} toneMapped={false} />
+      </mesh>
+      {/* reflexo de vidro por cima da captura */}
+      <mesh position={[0, 0, 0.05]}>
+        <planeGeometry args={[W, H]} />
+        <meshBasicMaterial color="#ffffff" transparent opacity={0.04} blending={THREE.AdditiveBlending} depthWrite={false} />
+      </mesh>
+      <lineSegments geometry={bordaGeo}>
+        <lineBasicMaterial ref={borda} color="#f2c14e" transparent opacity={0.2} />
+      </lineSegments>
+    </group>
+  );
+}
+
+function Orbita({ prog, ativo, onPick }: Omit<Props, "tier">) {
+  const urls = useMemo(() => PROJETOS.map((p) => asset(`/projetos/${p.shot}-1-1280.webp`)), []);
+  const texturas = useTexture(urls) as THREE.Texture[];
+  const { gl, size } = useThree();
+  const [hover, setHover] = useState<number | null>(null);
+  const itens = useRef<(THREE.Group | null)[]>([]);
+  const giro = useRef(0);
+
+  useEffect(() => {
+    for (const t of texturas) {
+      t.colorSpace = THREE.NoColorSpace; // o canvas é "linear": mostra os pixels como estão
+      t.anisotropy = Math.min(8, gl.capabilities.getMaxAnisotropy());
+      t.needsUpdate = true;
+    }
+  }, [texturas, gl]);
+
+  useFrame((state, dtRaw) => {
+    const dt = Math.min(dtRaw, 0.1);
+    // a rolagem traz um projeto por vez para a frente
+    const alvo = prog.current.p * (N - 1) * PASSO;
+    giro.current = damp(giro.current, alvo, 4, dt);
+    // a órbita fica à esquerda; o painel de texto ocupa a direita
+    const aspect = size.width / size.height;
+    const cx = -Math.min(3.1, 0.95 * aspect + 0.6);
+    itens.current.forEach((g, i) => {
+      if (!g) return;
+      const a = i * PASSO - giro.current + Math.PI / 2;
+      g.position.set(cx + Math.cos(a) * RX, Math.sin(state.clock.elapsedTime * 0.6 + i) * 0.06, Math.sin(a) * RZ);
+      // de frente para quem olha quando chega na frente
+      g.rotation.y = damp(g.rotation.y, Math.cos(a) * -0.55, 6, dt);
+    });
+    // parallax leve com o mouse
+    const cam = state.camera;
+    cam.position.x = damp(cam.position.x, heroState.px * 0.35, 2.5, dt);
+    cam.position.y = damp(cam.position.y, 1.1 - heroState.py * 0.25, 2.5, dt);
+    cam.lookAt(cx * 0.55, -0.15, 0);
+  });
+
+  return (
+    <>
+      {PROJETOS.map((p, i) => (
+        <group key={p.slug} ref={(g) => void (itens.current[i] = g)}>
+          <Monolito i={i} tex={texturas[i]} ativo={i === ativo} hover={hover === i} setHover={setHover} onPick={onPick} />
+        </group>
+      ))}
+    </>
+  );
+}
+
+/* Buraco negro pequeno no centro da órbita, com as mesmas peças do hero */
+function Singularidade({ q }: { q: Q }) {
+  const fase = useRef<Fase>({ phase: 0, time: 0 });
+  const g = useRef<THREE.Group>(null);
+  const { size } = useThree();
+  useFrame((_, dt) => {
+    fase.current.phase += Math.min(dt, 0.1) * 0.45;
+    fase.current.time += Math.min(dt, 0.1);
+    if (g.current) g.current.position.x = -Math.min(3.1, 0.95 * (size.width / size.height) + 0.6);
+  });
+  return (
+    <group ref={g} position={[0, -0.1, 0]}>
+      <group scale={0.42} rotation={[0.22, 0, -0.08]}>
+        <mesh>
+          <sphereGeometry args={[1, 48, 32]} />
+          <meshBasicMaterial color="#000000" />
+        </mesh>
+        <DiscoDeGas q={q} fase={fase} />
+      </group>
+      <group scale={0.42}>
+        <AnelDeFotons q={q} fase={fase} />
+      </group>
+    </group>
+  );
+}
+
+export default function ProjectOrbit({ prog, ativo, tier, onPick }: Props) {
+  const q: Q = tier === "high" ? "high" : "mid";
+  const wrap = useRef<HTMLDivElement>(null);
+  const [ativoLoop, setAtivoLoop] = useState(true);
+  const [falhou, setFalhou] = useState(false);
+
+  // só desenha enquanto a seção está na tela
+  useEffect(() => {
+    const el = wrap.current;
+    if (!el) return;
+    let visivel = true;
+    const atualizar = () => setAtivoLoop(visivel && !document.hidden);
+    const io = new IntersectionObserver(([e]) => {
+      visivel = e.isIntersecting;
+      atualizar();
+    });
+    io.observe(el);
+    document.addEventListener("visibilitychange", atualizar);
+    return () => {
+      io.disconnect();
+      document.removeEventListener("visibilitychange", atualizar);
+    };
+  }, []);
+
+  return (
+    <div ref={wrap} className="size-full">
+      {!falhou && (
+        <Canvas
+          flat
+          linear
+          dpr={[1, q === "high" ? 1.5 : 1.25]}
+          frameloop={ativoLoop ? "always" : "never"}
+          camera={{ fov: 38, near: 0.1, far: 200, position: [0, 1.1, 9.6] }}
+          gl={{ antialias: true, alpha: false, powerPreference: "high-performance", stencil: false }}
+          onCreated={({ gl }) => {
+            gl.debug.onShaderError = () => setFalhou(true);
+            gl.domElement.addEventListener("webglcontextlost", () => setFalhou(true), { once: true });
+          }}
+        >
+          <color attach="background" args={["#020205"]} />
+          <ambientLight intensity={0.35} />
+          <pointLight position={[-2.6, 0.4, 0.6]} color="#f2c14e" intensity={18} distance={14} decay={1.6} />
+          <directionalLight position={[4, 5, 6]} intensity={0.9} color="#9ec5ff" />
+          <Estrelas q={q} dpr={q === "high" ? 1.5 : 1.25} />
+          <Singularidade q={q} />
+          <Suspense fallback={null}>
+            <Orbita prog={prog} ativo={ativo} onPick={onPick} />
+          </Suspense>
+          <EffectComposer multisampling={0} enableNormalPass={false}>
+            <Bloom mipmapBlur intensity={0.6} luminanceThreshold={0.55} luminanceSmoothing={0.2} radius={0.6} />
+          </EffectComposer>
+        </Canvas>
+      )}
+    </div>
+  );
+}

@@ -1,0 +1,41 @@
+# Publica no GitHub Pages a cada push na main e uma vez por semana
+# (o build busca repositórios novos no GitHub e o Arquivo se atualiza sozinho).
+name: Publicar
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "17 9 * * 1" # segunda-feira, 06:17 em Brasília
+  workflow_dispatch:
+
+permissions:
+  contents: write # grava a branch gh-pages
+
+concurrency:
+  group: publicar
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: npm run csp:verificar
+      - uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./out
+          publish_branch: gh-pages
+          force_orphan: true
+          user_name: github-actions[bot]
+          user_email: 41898282+github-actions[bot]@users.noreply.github.com
+          commit_message: "Publica ${{ github.sha }}"

@@ -1,0 +1,46 @@
+# Qualidade a cada push e pull request: lint, tipos, build estático com CSP, testes no navegador e Lighthouse.
+name: Qualidade
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: qualidade-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verificar:
+    name: Lint, tipos, build e testes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # repositórios novos no Arquivo
+      - run: npm run csp:verificar
+      - run: npx playwright install --with-deps chromium
+      - run: npm test
+      - name: Lighthouse
+        run: npx -y @lhci/cli@0.15.1 autorun
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: relatorios
+          path: |
+            tests/relatorios
+            test-results
+            .lighthouseci
+          retention-days: 7

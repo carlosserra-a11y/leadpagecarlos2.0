@@ -1,0 +1,8 @@
+/** Gerador pseudoaleatório com semente: o mesmo resultado no build e no navegador */
+export function rng(seed: number) {
+  let s = Math.max(1, Math.floor(seed)) % 2147483647;
+  return () => {
+    s = (s * 16807) % 2147483647;
+    return (s - 1) / 2147483646;
+  };
+}
