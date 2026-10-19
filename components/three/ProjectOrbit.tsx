@@ -22,7 +22,7 @@ const RZ = 2.7;
 
 type Props = { prog: RefObject<Progresso>; ativo: number; tier: Tier | null; onPick: (i: number) => void };
 
-/* Um monólito de vidro escuro com a captura do site na frente e borda dourada que acende */
+/* Um monólito de vidro escuro com a captura do site na frente e borda prateada que acende */
 function Monolito({ i, tex, ativo, hover, setHover, onPick }: { i: number; tex: THREE.Texture; ativo: boolean; hover: boolean; setHover: (i: number | null) => void; onPick: (i: number) => void }) {
   const grupo = useRef<THREE.Group>(null);
   const tela = useRef<THREE.MeshBasicMaterial>(null);
@@ -79,7 +79,7 @@ function Monolito({ i, tex, ativo, hover, setHover, onPick }: { i: number; tex: 
         <meshBasicMaterial color="#ffffff" transparent opacity={0.04} blending={THREE.AdditiveBlending} depthWrite={false} />
       </mesh>
       <lineSegments geometry={bordaGeo}>
-        <lineBasicMaterial ref={borda} color="#f2c14e" transparent opacity={0.2} />
+        <lineBasicMaterial ref={borda} color="#c9d6e8" transparent opacity={0.2} />
       </lineSegments>
     </group>
   );
@@ -174,27 +174,62 @@ function Singularidade({ q }: { q: Q }) {
   );
 }
 
+/* o mesmo campo profundo do fundo do site atrás da galáxia (cortado como "cover", sem esticar) */
+function Ceu() {
+  const { scene, size } = useThree();
+  const [tex, setTex] = useState<THREE.Texture | null>(null);
+  useEffect(() => {
+    let vivo = true;
+    let t: THREE.Texture | null = null;
+    new THREE.TextureLoader().load(asset("/cosmos/fundo.webp"), (x) => {
+      t = x;
+      if (!vivo) return x.dispose();
+      x.colorSpace = THREE.NoColorSpace; // canvas "flat linear": a imagem entra como está
+      setTex(x);
+    });
+    return () => {
+      vivo = false;
+      t?.dispose();
+    };
+  }, []);
+  useEffect(() => {
+    if (!tex) return;
+    const img = tex.image as { width: number; height: number };
+    const a = size.width / size.height / (img.width / img.height);
+    tex.repeat.set(a < 1 ? a : 1, a < 1 ? 1 : 1 / a);
+    tex.offset.set((1 - tex.repeat.x) / 2, (1 - tex.repeat.y) / 2);
+    scene.background = tex;
+    return () => {
+      scene.background = null;
+    };
+  }, [tex, scene, size.width, size.height]);
+  return null;
+}
+
 export default function ProjectOrbit({ prog, ativo, tier, onPick }: Props) {
   const q: Q = tier === "high" ? "high" : "mid";
   const wrap = useRef<HTMLDivElement>(null);
   const [ativoLoop, setAtivoLoop] = useState(true);
   const [falhou, setFalhou] = useState(false);
 
-  // só desenha enquanto a seção está na tela
+  // só desenha enquanto a seção está na tela (e para com o estudo de caso aberto por cima)
   useEffect(() => {
     const el = wrap.current;
     if (!el) return;
     let visivel = true;
-    const atualizar = () => setAtivoLoop(visivel && !document.hidden);
+    const atualizar = () => setAtivoLoop(visivel && !document.hidden && !document.querySelector("dialog[open]"));
     const io = new IntersectionObserver(([e]) => {
       visivel = e.isIntersecting;
       atualizar();
     });
     io.observe(el);
     document.addEventListener("visibilitychange", atualizar);
+    addEventListener("lp2-modal", atualizar);
     return () => {
       io.disconnect();
       document.removeEventListener("visibilitychange", atualizar);
+      removeEventListener("lp2-modal", atualizar);
+      document.body.style.cursor = ""; // o mouse podia estar em cima de um monólito
     };
   }, []);
 
@@ -213,9 +248,10 @@ export default function ProjectOrbit({ prog, ativo, tier, onPick }: Props) {
             gl.domElement.addEventListener("webglcontextlost", () => setFalhou(true), { once: true });
           }}
         >
-          <color attach="background" args={["#010307"]} />
+          <color attach="background" args={["#02030a"]} />
+          <Ceu />
           <ambientLight intensity={0.35} />
-          <pointLight position={[-2.6, 0.4, 0.6]} color="#f2c14e" intensity={18} distance={14} decay={1.6} />
+          <pointLight position={[-2.6, 0.4, 0.6]} color="#c9d6e8" intensity={18} distance={14} decay={1.6} />
           <directionalLight position={[4, 5, 6]} intensity={0.9} color="#9ec5ff" />
           <Estrelas q={q} dpr={q === "high" ? 1.5 : 1.25} />
           <Singularidade q={q} />

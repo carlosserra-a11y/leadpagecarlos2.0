@@ -91,19 +91,18 @@ export function Galaxia({ onOpen, tier }: { onOpen: (i: number) => void; tier: T
         )}
 
         <div className="wrap pointer-events-none relative flex h-full items-center justify-end pt-[var(--header-h)]">
-          <div className="pointer-events-auto w-[min(440px,40vw)]">
+          <div className="painel-galaxia pointer-events-auto w-[min(440px,40vw)]">
+                {/* leitor de tela: avisa o projeto da vez numa região que não é recriada */}
+                <p className="sr-only" aria-live="polite">
+                  {ativo + 1} {t.projetos.de} {N}: {p.nome}
+                </p>
                 {/* a chave troca o painel inteiro: o CSS anima a entrada de cada projeto */}
-                <article
-                  key={p.slug}
-                  className="painel-entra glass glass-gold grid gap-4 rounded-[24px] p-7"
-                  aria-labelledby="galaxia-nome"
-                  aria-live="polite"
-                >
+                <article key={p.slug} className="painel-entra glass glass-chrome grid gap-4 rounded-[24px] p-7" aria-labelledby="galaxia-nome">
                   <p className="mono flex items-center justify-between text-xs tracking-[0.2em] text-muted">
                     <span>
-                      <span className="text-gold-hi">0{ativo + 1}</span> {t.projetos.de} 0{N}
+                      <span className="text-silver-hi">0{ativo + 1}</span> {t.projetos.de} 0{N}
                     </span>
-                    <span className="text-gold">{x.tag}</span>
+                    <span className="text-silver">{x.tag}</span>
                   </p>
                   <div>
                     <p className="kicker text-[0.68rem] text-muted">{x.cliente}</p>
@@ -111,16 +110,16 @@ export function Galaxia({ onOpen, tier }: { onOpen: (i: number) => void; tier: T
                       {p.nome}
                     </h3>
                   </div>
-                  <div>
+                  <div className="painel-desafio">
                     <p className="kicker mb-1.5 text-[0.66rem]">{t.projetos.desafio}</p>
                     <p className="text-[0.95rem] text-text/80">{x.desafio}</p>
                   </div>
                   <div>
                     <p className="kicker mb-1.5 text-[0.66rem]">{t.projetos.feito}</p>
-                    <ul className="grid gap-1.5 text-[0.92rem] text-text/80">
+                    <ul className="painel-feito grid gap-1.5 text-[0.92rem] text-text/80">
                       {x.feito.slice(0, 3).map((f) => (
                         <li key={f} className="flex gap-2.5">
-                          <span className="mt-[0.55em] size-1.5 flex-none rounded-full bg-gold" aria-hidden="true" />
+                          <span className="mt-[0.55em] size-1.5 flex-none rounded-full bg-silver" aria-hidden="true" />
                           {f}
                         </li>
                       ))}
@@ -134,7 +133,7 @@ export function Galaxia({ onOpen, tier }: { onOpen: (i: number) => void; tier: T
                     ))}
                   </ul>
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pt-1">
-                    <button type="button" className="btn btn-gold btn-sm" onClick={() => onOpen(ativo)}>
+                    <button type="button" className="btn btn-chrome btn-sm" onClick={() => onOpen(ativo)}>
                       {t.projetos.caso}
                     </button>
                     <a href={pagesLink(p.repo)} target="_blank" rel="noopener noreferrer" className="link-arrow text-sm">
@@ -150,10 +149,11 @@ export function Galaxia({ onOpen, tier }: { onOpen: (i: number) => void; tier: T
 
               <div className="mt-4 flex items-center justify-between gap-3">
                 <div className="flex gap-2">
-                  <button type="button" onClick={() => irPara(ativo - 1)} disabled={ativo === 0} className="grid size-11 place-items-center rounded-full border border-line bg-void/40 backdrop-blur hover:border-gold disabled:opacity-35" aria-label={t.projetos.prev}>
+                  {/* aria-disabled em vez de disabled: o foco não se perde quando chega na ponta */}
+                  <button type="button" onClick={() => ativo > 0 && irPara(ativo - 1)} aria-disabled={ativo === 0} className="grid size-11 place-items-center rounded-full border border-line bg-void/40 backdrop-blur hover:border-silver aria-disabled:opacity-35" aria-label={t.projetos.prev}>
                     <ArrowLeft size={18} aria-hidden="true" />
                   </button>
-                  <button type="button" onClick={() => irPara(ativo + 1)} disabled={ativo === N - 1} className="grid size-11 place-items-center rounded-full border border-line bg-void/40 backdrop-blur hover:border-gold disabled:opacity-35" aria-label={t.projetos.next}>
+                  <button type="button" onClick={() => ativo < N - 1 && irPara(ativo + 1)} aria-disabled={ativo === N - 1} className="grid size-11 place-items-center rounded-full border border-line bg-void/40 backdrop-blur hover:border-silver aria-disabled:opacity-35" aria-label={t.projetos.next}>
                     <ArrowRight size={18} aria-hidden="true" />
                   </button>
                 </div>
@@ -167,7 +167,7 @@ export function Galaxia({ onOpen, tier }: { onOpen: (i: number) => void; tier: T
                         aria-label={q.nome}
                         className="grid size-11 place-items-center"
                       >
-                        <span className={`block h-1.5 rounded-full transition-all duration-500 ${i === ativo ? "w-6 bg-gold" : "w-1.5 bg-white/30"}`} />
+                        <span className={`block h-1.5 rounded-full transition-all duration-500 ${i === ativo ? "w-6 bg-silver" : "w-1.5 bg-white/30"}`} />
                       </button>
                     </li>
                   ))}

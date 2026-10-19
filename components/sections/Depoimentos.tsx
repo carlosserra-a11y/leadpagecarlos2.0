@@ -14,7 +14,7 @@ export function Depoimentos() {
         <SectionHead id="depoimentos-t" k={lang === "pt" ? "Depoimentos" : "Testimonials"} t={lang === "pt" ? "Quem já entrou na órbita" : "Who already entered the orbit"} />
         <ul className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {DEPOIMENTOS.map((d, i) => (
-            <li key={d.nome} className="glass rounded-[24px] p-6" data-reveal style={{ "--d": i } as React.CSSProperties}>
+            <li key={d.nome} className="glass rounded-[24px] p-6" data-reveal data-tilt="6" style={{ "--d": i } as React.CSSProperties}>
               <figure className="grid gap-4">
                 <blockquote className="text-lg text-text/85">“{d.texto[lang]}”</blockquote>
                 <figcaption className="text-sm">

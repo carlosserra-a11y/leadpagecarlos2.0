@@ -15,7 +15,7 @@ export type Q = Exclude<Tier, "off">;
 export const QUALIDADE: Record<Q, { passos: number; oitavas: number; escala: number }> = {
   high: { passos: 220, oitavas: 5, escala: 0.85 },
   mid: { passos: 160, oitavas: 4, escala: 0.65 },
-  low: { passos: 110, oitavas: 3, escala: 0.48 },
+  low: { passos: 110, oitavas: 3, escala: 0.6 },
 };
 
 export const ease = (x: number) => x * x * (3 - 2 * x);

@@ -11,16 +11,16 @@ export function ProjectCard({ p, i, onOpen }: { p: Projeto; i: number; onOpen: (
   const { t, lang } = useLang();
   const x = p[lang];
   return (
-    <article className="glass group relative flex flex-col overflow-hidden rounded-[22px]" aria-labelledby={`card-${p.slug}`} data-reveal style={{ "--d": i } as React.CSSProperties}>
+    <article className="glass group relative flex flex-col overflow-hidden rounded-[22px]" aria-labelledby={`card-${p.slug}`} data-reveal data-tilt="7" style={{ "--d": i } as React.CSSProperties}>
       <div className="shot-frame m-2 mb-0 rounded-[16px]">
         <Shot shot={p.shot} alt={`${t.caso.captura} ${p.nome}`} className="transition-transform duration-[1.2s] ease-[var(--ease-out-expo)] group-hover:scale-[1.04]" />
-        <span className="mono absolute left-3 top-3 rounded-full bg-void/70 px-2.5 py-1 text-[0.68rem] tracking-widest text-gold-hi backdrop-blur">
+        <span className="mono absolute left-3 top-3 rounded-full bg-void/70 px-2.5 py-1 text-[0.68rem] tracking-widest text-silver-hi backdrop-blur">
           0{i + 1}
         </span>
       </div>
       <div className="flex flex-1 flex-col gap-3 p-5">
         <p className="kicker text-[0.68rem] text-muted">
-          {x.cliente} · <span className="text-gold">{x.tag}</span>
+          {x.cliente} · <span className="text-silver">{x.tag}</span>
         </p>
         <h3 id={`card-${p.slug}`} className="title text-[1.7rem] text-text">
           {p.nome}
@@ -34,7 +34,7 @@ export function ProjectCard({ p, i, onOpen }: { p: Projeto; i: number; onOpen: (
           ))}
         </ul>
         <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-1 pt-3">
-          <button type="button" className="needs-js btn btn-gold btn-sm" onClick={(e) => onOpen(i, e.currentTarget)}>
+          <button type="button" className="needs-js btn btn-chrome btn-sm" onClick={(e) => onOpen(i, e.currentTarget)}>
             {t.projetos.caso}
           </button>
           <a href={pagesLink(p.repo)} target="_blank" rel="noopener noreferrer" className="link-arrow text-sm">

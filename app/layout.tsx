@@ -12,10 +12,11 @@ import { Cursor } from "@/components/layout/Cursor";
 import { Toaster } from "@/components/ui/Toaster";
 import { RevealObserver } from "@/components/ui/RevealObserver";
 import { SkipLink } from "@/components/layout/SkipLink";
+import { Cosmos } from "@/components/layout/Cosmos";
+import { Parallax } from "@/components/layout/Parallax";
 
 /* Fontes góticas das referências do Carlos, guardadas no repositório (app/fontes, subconjunto latino):
-   o build não depende do Google Fonts e o navegador não pede nada a terceiros.
-   O alfabeto em círculo (UnifrakturMaguntia) vai em contorno: public/hero/anel.svg */
+   o build não depende do Google Fonts e o navegador não pede nada a terceiros. */
 const cook = localFont({ src: "./fontes/unifrakturcook-700.woff2", weight: "700", variable: "--f-cook", display: "swap", adjustFontFallback: "Times New Roman" });
 const consent = localFont({ src: "./fontes/manufacturing-consent-400.woff2", weight: "400", variable: "--f-consent", display: "swap", preload: false, adjustFontFallback: "Times New Roman" });
 // só o que aparece logo de cara é pré-carregado (nome em gótica e texto); o resto chega sem bloquear
@@ -44,7 +45,7 @@ export const metadata: Metadata = {
     siteName: "Carlos Serra",
     title: t.meta.title,
     description: t.meta.desc,
-    images: [{ url: OG, width: 1200, height: 630, alt: "Carlos Serra em letras góticas douradas sobre um buraco negro" }],
+    images: [{ url: OG, width: 1200, height: 630, alt: "Carlos Serra em letras góticas prateadas sobre um buraco negro" }],
   },
   twitter: { card: "summary_large_image", title: t.meta.title, description: t.meta.desc, images: [OG] },
   icons: {
@@ -59,7 +60,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#010307",
+  themeColor: "#02030a",
   colorScheme: "dark",
   width: "device-width",
   initialScale: 1,
@@ -112,6 +113,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       </head>
       <body>
+        <Cosmos />
         <LangProvider>
           <SkipLink />
           <Loader />
@@ -124,6 +126,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Cursor />
           <Toaster />
           <RevealObserver />
+          <Parallax />
         </LangProvider>
       </body>
     </html>

@@ -1,4 +1,4 @@
-# leadpagecarlos 2.0 · Gótico Cósmico
+# leadpagecarlos 2.0 · Gótico Cósmico, edição Surfista Prateado
 
 Landing page de **Carlos Serra**, desenvolvedor full stack júnior em Palhoça/SC.
 Tem dois objetivos: **conseguir estágio ou vaga júnior** e **vender a criação de sites**.
@@ -11,8 +11,8 @@ Tem dois objetivos: **conseguir estágio ou vaga júnior** e **vender a criaçã
 
 | Seção | O que faz |
 |---|---|
-| **Intro** | O anel do alfabeto gótico se forma e "Carlos Serra" é escrito letra por letra em traço dourado (os contornos reais da fonte), depois se preenche e recebe um brilho. O contador segue o carregamento real. A página se abre em círculo a partir do buraco negro. Aparece só na primeira visita da sessão e pode ser pulada. |
-| **Hero** | Buraco negro calculado com física de verdade: cada pixel segue a trajetória da luz em volta da massa (relatividade geral). Por isso aparecem o arco do disco por cima e por baixo da sombra, o anel de fótons e as estrelas do fundo deformadas pela lente. O disco de gás tem a cor e o brilho da temperatura real, fica mais claro do lado que vem na nossa direção (efeito Doppler) e mais vermelho perto do horizonte. O mouse move a câmera (parallax). Na rolagem, a câmera avança até atravessar o horizonte. |
+| **Intro** | Uma luz prateada dá voltas na órbita e "Carlos Serra" é escrito letra por letra em traço de prata (os contornos reais da fonte), depois ganha o preenchimento cromado e um brilho. O contador segue o carregamento real. A página se abre em círculo a partir do buraco negro. Aparece só na primeira visita da sessão e pode ser pulada. |
+| **Hero** | Buraco negro calculado com física de verdade: cada pixel segue a trajetória da luz em volta da massa (relatividade geral). Por isso aparecem o arco do disco por cima e por baixo da sombra e o anel de fótons, e as galáxias que ficam atrás do buraco negro viram arcos em volta dele (lente gravitacional). O disco de gás é branco-prateado como um gás a milhares de graus, fica mais claro e azulado do lado que vem na nossa direção (efeito Doppler) e mais fraco do outro. A câmera deriva devagar e o mouse a move (parallax), então a lente redesenha o céu o tempo todo. Na rolagem, a câmera avança até atravessar o horizonte. |
 | **Galáxia de Projetos** | Os 5 melhores projetos viram monólitos de vidro orbitando o buraco negro (o mesmo cálculo de luz do hero, em tamanho menor). A rolagem gira a órbita, clicar abre o estudo de caso e as setas ← → navegam. No celular vira um carrossel de arrastar. |
 | **Arquivo** | Todos os repositórios públicos com filtros. Repositórios novos entram sozinhos (busca no GitHub durante o build). |
 | **Serviços** | Pacotes de site (landing page, institucional, loja, sistema com painel). O preço só aparece se estiver em `dados.ts`. |
@@ -20,25 +20,25 @@ Tem dois objetivos: **conseguir estágio ou vaga júnior** e **vender a criaçã
 | **Stack** | Constelações de tecnologias, cada uma ligada ao repositório onde dá para conferir o código. |
 | **Sobre + Recrutador** | Retrato, trajetória e o atalho "Sou recrutador": currículo, LinkedIn, resumo pronto para o ATS, e-mail e contato `.vcf`. |
 | **Contato** | Formulário de briefing que vira uma mensagem pronta no WhatsApp ou no e-mail, com prévia ao vivo e QR code. |
-| **Rodapé** | "Pronto para entrar na órbita?" e o nome gigante em gótica que acende onde o mouse passa. |
+| **Rodapé** | "Pronto para entrar na órbita?" e o nome gigante em gótica que acende em cromo onde o mouse passa. |
+| **Fundo** | O espaço atrás do site inteiro, em camadas: campo profundo com nebulosa e milhares de galáxias pequenas, duas camadas de estrelas (as fortes com raios de difração, como nas fotos do Hubble) e galáxias maiores que passam devagar. Cada camada anda numa velocidade com a rolagem e com o mouse, o que dá profundidade. Os cartões inclinam em 3D na direção do mouse, com um reflexo prateado. |
 
 Tudo em **português e inglês**, com troca sem recarregar a página.
 
-## Cores do espaço interestelar
+## Cores: Surfista Prateado
 
-O fundo é o preto do espaço com nebulosas azul-petróleo e campos de estrelas. O dourado vem do disco de acreção.
+Prata cromada, o azul do "poder cósmico" e o preto do espaço profundo.
 
 | Token | Cor | Uso |
 |---|---|---|
-| `void` | `#010307` | fundo |
-| `space` | `#040a14` | cartões |
-| `nebula` | `#0a1f3d` | nebulosa azul |
-| `teal` | `#0e4a5c` | nebulosa azul-petróleo |
-| `gold` / `gold-hi` | `#f4c25c` / `#fff1c9` | destaque, disco de acreção |
-| `ember` | `#ff8a3d` | gás mais frio do disco |
-| `ice` | `#9fd3ff` | estrelas, detalhes |
+| `void` | `#02030a` | fundo |
+| `space` | `#060a16` | cartões, rodapé |
+| `nebula` | `#101a3c` | nebulosa índigo |
+| `silver` / `silver-hi` | `#c9d6e8` / `#f3f7fc` | destaque, ícones, números |
+| `cosmic` | `#8ab8ff` | rótulos, foco do teclado, brilhos |
+| `ice` | `#a9dcff` | detalhes |
 
-Os tokens ficam em `app/globals.css`.
+O nome, os títulos grandes e os botões principais usam `--chrome-grad`, um degradê de metal líquido com o horizonte refletido no meio. Os tokens ficam em `app/globals.css`.
 
 ## Tipografia gótica
 
@@ -48,7 +48,6 @@ As letras seguem as três referências do Carlos:
 |---|---|
 | Nome, logo e números | UnifrakturCook (Old English) |
 | Títulos | Grenze Gotisch |
-| Anel do alfabeto | UnifrakturMaguntia, em contorno (`public/hero/anel.svg`) |
 | Nome gigante do rodapé | Manufacturing Consent (estilo tatuagem) |
 | Texto | Inter |
 | Detalhes técnicos | JetBrains Mono |
@@ -94,14 +93,17 @@ Configuração do GitHub Pages (uma vez só): **Settings → Pages → Build and
 - **Next.js 16 (App Router) com exportação estática.** Não precisa de servidor, roda direto no GitHub Pages. React 19, TypeScript estrito e Tailwind CSS 4.
 - **3D com three.js + React Three Fiber.**
   - O buraco negro é um ray tracing de Schwarzschild feito no shader (`components/hero/shaders/gargantua.ts`): o raio de luz anda em passos pela equação da geodésica, e o disco usa o perfil de brilho de Novikov–Thorne, cor de corpo negro, Doppler relativístico e desvio para o vermelho gravitacional.
+  - O céu atrás dele é uma imagem gerada (`public/cosmos/ceu-*.webp`) que o shader lê pela direção final de cada raio; as estrelas são desenhadas na hora, para ficarem nítidas.
+  - Por cima vão bloom, uma leve aberração cromática nas bordas e grão de filme.
   - Toda a cena carrega só depois da primeira interação; até lá aparece um pôster tirado da própria cena.
   - A qualidade se ajusta ao aparelho (220, 160 ou 110 passos por raio, e resolução menor) e cai sozinha se o FPS ficar baixo.
-  - Sem WebGL ou com "reduzir movimento", fica o pôster.
-- **Desempenho medido no Lighthouse.** Computador: ~93 de desempenho; 100 em acessibilidade, boas práticas e SEO. Celular (4G lento simulado): ~80 de desempenho; 100 nos outros três.
+  - Sem WebGL (ou se a placa de vídeo recusar o contexto) ou com "reduzir movimento", fica o pôster e os projetos viram carrossel; a página nunca cai.
+- **Espaço e parallax.** As galáxias, o campo profundo e as estrelas são gerados por um shader próprio (`ferramentas/cosmos.mjs`): espirais com braços em espiral logarítmica, poeira, aglomerados azuis e regiões rosadas; barradas, de lado e elípticas. Um motor só de parallax (`components/layout/Parallax.tsx`) move as camadas com a rolagem e o mouse num `requestAnimationFrame` que para quando nada mexe. As imagens do fundo só chegam depois da intro, para não disputar banda com o começo da página.
+- **Desempenho medido no Lighthouse.** Computador: ~92 de desempenho; 100 em acessibilidade, boas práticas e SEO. Celular (4G lento simulado): ~81 de desempenho; 100 nos outros três.
 - **Segurança.** A CSP vai numa `<meta>` com o hash de cada script do build (`ferramentas/csp.mjs`), sem scripts de terceiros. As fontes ficam no próprio repositório (`app/fontes`), então o build não depende do Google Fonts. Links externos usam `noopener`.
 - **Acessibilidade.**
-  - Um `h1` só, foco dourado visível e tudo navegável por teclado.
-  - O modal prende o foco e o devolve a quem abriu.
+  - Um `h1` só, foco azul visível e tudo navegável por teclado (o cabeçalho escondido reaparece quando recebe o foco).
+  - O modal prende o foco, trava a rolagem da página atrás e devolve o foco a quem abriu.
   - Contraste AA e respeito a "reduzir movimento".
   - Sem JavaScript, todo o conteúdo aparece.
 
@@ -112,12 +114,12 @@ Configuração do GitHub Pages (uma vez só): **Settings → Pages → Build and
 | `csp.mjs` | CSP com hashes (roda no `npm run build`) |
 | `servir.mjs` | servidor local igual ao GitHub Pages |
 | `marca.mjs` | logo, favicon e ícones a partir da fonte UnifrakturCook |
-| `anel.mjs` | anel do alfabeto gótico em contorno |
+| `cosmos.mjs` | galáxias, campo profundo, estrelas em mosaico e o céu do buraco negro (`public/cosmos/`) |
 | `nome.mjs` | contornos das letras de "Carlos Serra" para a intro (`components/layout/nomePath.ts`) |
 | `poster.mjs` | pôster do hero a partir da cena 3D |
 | `og.mjs` | imagem de compartilhamento (`og.jpg`) |
 
-Para usar `marca`, `anel`, `nome`, `poster` e `og`, rode antes `cd ferramentas && npm install && npm run fontes`.
+Para usar `marca`, `cosmos`, `nome`, `poster` e `og`, rode antes `cd ferramentas && npm install && npm run fontes`.
 
 ## Contato
 

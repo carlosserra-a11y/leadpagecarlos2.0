@@ -22,8 +22,8 @@ async function capturar(nome, width, height) {
     await page.waitForTimeout(500);
   }
   await page.waitForSelector('.hero-canvas[data-pronto="true"]', { timeout: 5000 });
-  // só a cena: esconde texto, HUD, anel (ele é HTML por cima do pôster) e cabeçalho
-  await page.addStyleTag({ content: ".hero-ui,.hud,.gothic-ring,.site-header,.hero-vignette,.cursor{visibility:hidden!important}.hero-canvas{opacity:1!important;transition:none!important}" });
+  // só a cena: esconde texto, HUD e cabeçalho (são HTML por cima do pôster)
+  await page.addStyleTag({ content: ".hero-ui,.hud,.site-header,.hero-vignette,.cursor{visibility:hidden!important}.hero-canvas{opacity:1!important;transition:none!important}" });
   await page.waitForTimeout(8000);
   const png = await page.locator(".hero-stage").screenshot();
   await sharp(png).webp({ quality: 74, effort: 6 }).toFile(new URL(`${nome}.webp`, OUT).pathname);

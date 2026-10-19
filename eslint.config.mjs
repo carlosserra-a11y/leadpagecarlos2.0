@@ -17,7 +17,7 @@ const eslintConfig = defineConfig([
     files: ["components/three/**", "components/hero/SpaceVortexCanvas.tsx"],
     rules: { "react-hooks/immutability": "off" },
   },
-  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts", "tests/relatorios/**"]),
+  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts", "tests/relatorios/**", ".claude/**"]),
 ]);
 
 export default eslintConfig;

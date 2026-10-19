@@ -1,4 +1,4 @@
-/* Imagem de compartilhamento (og.jpg para WhatsApp, LinkedIn, X): 1200×630, nome em gótica sobre o buraco negro.
+/* Imagem de compartilhamento (og.jpg para WhatsApp, LinkedIn, X): 1200×630, nome em gótica cromada sobre o buraco negro.
    Uso: cd ferramentas && node og.mjs   (precisa do pôster em public/hero e das fontes em .cache) */
 import { readFile } from "node:fs/promises";
 import { chromium } from "playwright";
@@ -15,15 +15,15 @@ const html = `<!doctype html><html><head><meta charset="utf-8"><style>
 @font-face{font-family:Grenze;src:url(data:font/ttf;base64,${grenze})}
 @font-face{font-family:Inter;src:url(data:font/ttf;base64,${inter})}
 *{margin:0;box-sizing:border-box}
-body{width:1200px;height:630px;overflow:hidden;background:#010307;font-family:Inter;color:#eef1f6}
+body{width:1200px;height:630px;overflow:hidden;background:#02030a;font-family:Inter;color:#eef2f8}
 .bg{position:absolute;inset:0;background:url(data:image/webp;base64,${poster}) 50% 22%/cover}
-.v{position:absolute;inset:0;background:radial-gradient(90% 80% at 50% 30%,transparent 35%,rgba(1,3,7,.85)),linear-gradient(180deg,transparent 40%,rgba(1,3,7,.92) 78%)}
+.v{position:absolute;inset:0;background:radial-gradient(90% 80% at 50% 30%,transparent 35%,rgba(2,3,10,.85)),linear-gradient(180deg,transparent 40%,rgba(2,3,10,.92) 78%)}
 .c{position:absolute;inset:auto 0 56px;display:grid;justify-items:center;gap:14px;text-align:center}
 .b{font:500 19px/1 Inter;letter-spacing:.02em;padding:10px 18px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.07);display:flex;gap:10px;align-items:center}
 .b i{width:9px;height:9px;border-radius:50%;background:#4ade80;display:block}
-h1{font:700 128px/0.95 Cook;background:linear-gradient(180deg,#fff8e1 6%,#ffe29a 26%,#f0b548 46%,#9a5a17 53%,#e6a33c 60%,#ffe5a3 78%,#c17b22 100%);-webkit-background-clip:text;color:transparent;filter:drop-shadow(0 8px 40px rgba(242,193,78,.35))}
+h1{font:700 128px/0.95 Cook;background:linear-gradient(180deg,#ffffff 4%,#e9eef6 22%,#b6c1d1 44%,#4b5668 52%,#8994a6 56%,#dfe6f0 72%,#ffffff 84%,#9aa6b8 100%);-webkit-background-clip:text;color:transparent;filter:drop-shadow(0 8px 40px rgba(138,184,255,.4))}
 .t{font:700 38px/1 Grenze}
-.r{font:500 17px/1 Inter;letter-spacing:.28em;text-transform:uppercase;color:#fff1c1;opacity:.85}
+.r{font:500 17px/1 Inter;letter-spacing:.28em;text-transform:uppercase;color:#f3f7fc;opacity:.85}
 .u{position:absolute;right:28px;top:24px;font:500 16px/1 Inter;letter-spacing:.12em;color:rgba(245,241,232,.6)}
 </style></head><body><div class="bg"></div><div class="v"></div>
 <p class="u">carlosserra-a11y.github.io/leadpagecarlos2.0</p>

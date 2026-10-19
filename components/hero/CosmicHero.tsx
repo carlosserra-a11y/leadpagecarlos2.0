@@ -10,8 +10,8 @@ import { asset } from "@/lib/asset";
 import { CONFIG, REPOS } from "@/lib/dados";
 import { useClock } from "@/lib/useClock";
 import { useDeviceTier, usePrefersReducedMotion } from "@/lib/useDeviceTier";
-import { GothicRing } from "./GothicRing";
 import { heroState } from "./heroState";
+import { Protecao3D } from "@/components/three/Protecao";
 
 /* O canvas 3D só baixa depois da primeira pintura, e nunca no servidor */
 const SpaceVortexCanvas = dynamic(() => import("./SpaceVortexCanvas"), { ssr: false });
@@ -31,7 +31,6 @@ export function CosmicHero() {
   const track = useRef<HTMLElement>(null);
   const stage = useRef<HTMLDivElement>(null);
   const ui = useRef<HTMLDivElement>(null);
-  const ring = useRef<HTMLDivElement>(null);
   const voidRef = useRef<HTMLDivElement>(null);
   const poster = useRef<HTMLDivElement>(null);
   const hud = useRef<HTMLDivElement>(null);
@@ -72,7 +71,6 @@ export function CosmicHero() {
 
   // Ponteiro (parallax) e rolagem (dolly zoom, interface some, passagem pelo horizonte)
   useEffect(() => {
-    heroState.ring = ring.current;
     const st = stage.current!;
     heroState.bhY = parseFloat(getComputedStyle(st).getPropertyValue("--bh-y")) || 0.34;
 
@@ -121,7 +119,6 @@ export function CosmicHero() {
       removeEventListener("resize", scroll);
       removeEventListener("pointermove", pointer);
       removeEventListener("deviceorientation", tilt);
-      heroState.ring = null;
     };
   }, [dolly]);
 
@@ -141,38 +138,39 @@ export function CosmicHero() {
 
         {montar3d && tier && tier !== "off" && (
           <div className="hero-canvas" data-pronto={pronto} aria-hidden="true">
-            <SpaceVortexCanvas tier={tier} trackRef={track} onPronto={() => setPronto(true)} />
+            <Protecao3D>
+              <SpaceVortexCanvas tier={tier} trackRef={track} onPronto={() => setPronto(true)} />
+            </Protecao3D>
           </div>
         )}
 
-        <GothicRing ref={ring} />
         <div className="hero-vignette" aria-hidden="true" />
 
         <div className="absolute inset-0 flex flex-col items-center justify-end px-4 pb-[clamp(56px,9svh,110px)] pt-[calc(var(--header-h)+8px)]">
           <div ref={ui} className="hero-ui grid justify-items-center gap-[clamp(10px,1.6svh,18px)] text-center will-change-transform" data-in={entrou}>
-            <p className="glass inline-flex items-center gap-2.5 rounded-full px-4 py-2 text-[0.82rem] text-text/90 sm:text-sm" style={{ "--i": 0 } as React.CSSProperties}>
+            <p className="hero-badge glass inline-flex items-center gap-2.5 rounded-full px-4 py-2 text-[0.82rem] text-text/90 sm:text-sm" style={{ "--i": 0, "--d": 12 } as React.CSSProperties}>
               <span className="pulse-dot" aria-hidden="true" />
-              <span aria-hidden="true" className="text-gold">✦</span>
+              <span aria-hidden="true" className="text-silver">✦</span>
               {t.hero.badge}
             </p>
 
-            <h1 id="hero-titulo" className="hero-h1 gothic gold-text" style={{ "--i": 1 } as React.CSSProperties}>
+            <h1 id="hero-titulo" className="hero-h1 gothic chrome-text" style={{ "--i": 1, "--d": 26 } as React.CSSProperties}>
               {CONFIG.nome}
             </h1>
 
-            <p className="mono text-[0.72rem] tracking-[0.28em] text-gold-hi/80 uppercase sm:text-[0.78rem]" style={{ "--i": 2 } as React.CSSProperties}>
+            <p className="hero-role mono text-[0.72rem] tracking-[0.28em] text-silver-hi/80 uppercase sm:text-[0.78rem]" style={{ "--i": 2, "--d": 16 } as React.CSSProperties}>
               {t.hero.role} · {CONFIG.cidade}
             </p>
 
-            <p className="title text-[clamp(1.45rem,3.4vw,2.2rem)] text-text" style={{ "--i": 3 } as React.CSSProperties}>
+            <p className="title text-[clamp(1.45rem,3.4vw,2.2rem)] text-text" style={{ "--i": 3, "--d": 12 } as React.CSSProperties}>
               {t.hero.tagline}
             </p>
 
-            <p className="lede max-w-[46ch] text-[clamp(0.98rem,1.4vw,1.12rem)] text-text/75" style={{ "--i": 4 } as React.CSSProperties}>
+            <p className="hero-lede lede max-w-[46ch] text-[clamp(0.98rem,1.4vw,1.12rem)] text-text/75" style={{ "--i": 4, "--d": 8 } as React.CSSProperties}>
               {t.hero.sub}
             </p>
 
-            <div className="mt-1 flex flex-wrap items-center justify-center gap-3" style={{ "--i": 5 } as React.CSSProperties}>
+            <div className="mt-1 flex flex-wrap items-center justify-center gap-3" style={{ "--i": 5, "--d": 5 } as React.CSSProperties}>
               <MagneticLink href="#contato" data-assunto="projeto" className="min-w-[11rem]">
                 {t.hero.ctaSite}
               </MagneticLink>
@@ -185,22 +183,22 @@ export function CosmicHero() {
               </a>
             </div>
 
-            <dl className="mono mt-2 flex flex-wrap justify-center gap-x-6 gap-y-1 text-[0.72rem] tracking-[0.14em] text-muted uppercase" style={{ "--i": 6 } as React.CSSProperties}>
+            <dl className="hero-stats mono mt-2 flex flex-wrap justify-center gap-x-6 gap-y-1 text-[0.72rem] tracking-[0.14em] text-muted uppercase" style={{ "--i": 6, "--d": 4 } as React.CSSProperties}>
               <div className="flex items-baseline gap-2">
                 <dt className="order-2">{t.hero.n1}</dt>
-                <dd className="order-1 text-base text-gold-hi">
+                <dd className="order-1 text-base text-silver-hi">
                   <Counter value={CONFIG.numeros.clientes} start={entrou} />
                 </dd>
               </div>
               <div className="flex items-baseline gap-2">
                 <dt className="order-2">{t.hero.n2}</dt>
-                <dd className="order-1 text-base text-gold-hi">
+                <dd className="order-1 text-base text-silver-hi">
                   <Counter value={CONFIG.numeros.sites} start={entrou} />
                 </dd>
               </div>
               <div className="flex items-baseline gap-2">
                 <dt className="order-2">{t.hero.n3}</dt>
-                <dd className="order-1 text-base text-gold-hi">
+                <dd className="order-1 text-base text-silver-hi">
                   <Counter value={totalRepos} start={entrou} />
                 </dd>
               </div>

@@ -5,13 +5,14 @@
    Schwarzschild. Em unidades com o raio de Schwarzschild rs = 1, a geodésica da luz equivale a
        x'' = -1,5 · h² · x / r⁵      (h = |x × v|, constante ao longo do caminho)
    Com isso aparecem sozinhos: a sombra (raio crítico ≈ 2,6 rs), o anel de fótons, a imagem do lado
-   de trás do disco curvada por cima e por baixo da sombra e as estrelas do fundo deformadas pela lente.
+   de trás do disco curvada por cima e por baixo da sombra e o céu do fundo deformado pela lente
+   (as galáxias que ficam atrás do buraco negro viram arcos em volta dele).
 
    O disco de acreção é fino, começa na última órbita estável (ISCO, 3 rs) e tem:
-   - temperatura pelo perfil de Novikov–Thorne (cor de corpo negro);
-   - efeito Doppler relativístico (um lado mais claro e azulado, o outro mais avermelhado);
+   - temperatura pelo perfil de Novikov–Thorne (cor de corpo negro, de ~4 000 K por fora a ~17 000 K perto do ISCO);
+   - efeito Doppler relativístico (o lado que vem na nossa direção fica mais claro e azulado, o outro mais fraco e quente);
    - redshift gravitacional (escurece perto do horizonte);
-   - gás turbulento girando com a velocidade de Kepler (mais rápido por dentro).
+   - gás turbulento girando com a velocidade de Kepler (mais rápido por dentro), cisalhado em espiral.
    ========================================================================= */
 
 const RUIDO = /* glsl */ `
@@ -42,7 +43,7 @@ float fbm(vec3 p) {
 
 const FISICA = /* glsl */ `
 const float R_ISCO = 3.0;    // última órbita circular estável
-const float R_OUT = 12.5;    // borda externa do disco
+const float R_OUT = 14.0;    // borda externa do disco
 const float R_MIN = 1.55;    // gás que mergulha depois do ISCO (tênue)
 
 uniform float uTime;
@@ -60,15 +61,17 @@ vec3 corpoNegro(float T) {
 }
 
 // gás turbulento: duas camadas defasadas no tempo (flow map), assim a rotação diferencial
-// não enrola a textura para sempre
+// não enrola a textura para sempre. O ângulo ganha um termo em log(r): a turbulência sai
+// cisalhada em espiral, como acontece num disco que gira mais rápido por dentro.
 float gas(float r, float ang, float omega) {
   const float CICLO = 9.0;
   float t = uPhase;
   float f1 = fract(t / CICLO);
   float f2 = fract(t / CICLO + 0.5);
   float w = 1.0 - abs(2.0 * f1 - 1.0);
-  float a1 = ang - omega * f1 * CICLO * 5.0;
-  float a2 = ang - omega * f2 * CICLO * 5.0;
+  float lr = log(r);
+  float a1 = ang - omega * f1 * CICLO * 5.0 + lr * 1.7;
+  float a2 = ang - omega * f2 * CICLO * 5.0 + lr * 1.7;
   // baixa frequência no ângulo e alta no raio: faixas ao longo das órbitas
   vec2 c1 = vec2(cos(a1), sin(a1));
   vec2 c2 = vec2(cos(a2), sin(a2));
@@ -78,7 +81,9 @@ float gas(float r, float ang, float omega) {
   // filamentos finos e irregulares ao longo das órbitas
   float fino = mix(vnoise(vec3(c2 * 0.8, r * 4.2 + 5.0)), vnoise(vec3(c1 * 0.8, r * 4.2)), w);
   float estria = 0.7 + 0.6 * smoothstep(0.3, 0.8, fino);
-  return clamp(pow(n, 1.6) * 1.7 * estria, 0.0, 1.6);
+  // anéis e falhas em raios diferentes (o disco não é uniforme)
+  float aneis = 0.72 + 0.28 * smoothstep(0.25, 0.75, vnoise(vec3(r * 2.6, 0.5, 7.0)));
+  return clamp(pow(n, 1.6) * 1.7 * estria * aneis, 0.0, 1.6);
 }
 
 // emissão e opacidade do disco onde o fóton cruzou o plano (no referencial do disco)
@@ -89,7 +94,7 @@ vec4 disco(vec3 x, vec3 dir) {
   float rr = max(r, R_ISCO * 1.002);
   float fluxo = pow(R_ISCO / rr, 3.0) * (1.0 - sqrt(R_ISCO / rr)) / 0.0566;
   float mergulho = smoothstep(R_MIN, R_ISCO, r); // dentro do ISCO o gás cai rápido e quase não brilha
-  float T = 1700.0 + 5600.0 * pow(max(fluxo, 0.0), 0.25); // ~7000 K por dentro, brasa por fora
+  float T = 3000.0 + 14000.0 * pow(max(fluxo, 0.0), 0.25); // gás muito quente: branco-azulado por dentro
   // velocidade orbital local (Kepler em Schwarzschild, rs = 1): v = √(0,5 / (r − 1))
   float v = min(sqrt(0.5 / (max(r, R_MIN) - 1.0)), 0.75);
   vec3 tang = normalize(vec3(-x.z, 0.0, x.x));
@@ -101,16 +106,19 @@ vec4 disco(vec3 x, vec3 dir) {
   float ang = atan(x.z, x.x);
   float dens = gas(r, ang, v / r);
   dens *= smoothstep(R_OUT, R_OUT * 0.4, r) * mix(0.18, 1.0, mergulho);
-  // brilho ∝ g⁴ (feixe relativístico), com um perfil um pouco mais aberto que o físico para o disco aparecer inteiro
+  // brilho ∝ g³ (feixe relativístico), com um perfil um pouco mais aberto que o físico para o disco aparecer inteiro
   float brilho = pow(max(fluxo, 0.0), 0.85) * mergulho + 0.1 * (1.0 - mergulho);
-  vec3 cor = corpoNegro(T * g) * pow(g, 3.2) * brilho * (0.3 + dens) * 2.6;
-  // gradação de cinema: o branco do gás puxa para o âmbar dourado
-  cor *= vec3(1.0, 0.84, 0.62);
+  vec3 cor = corpoNegro(T * g) * pow(g, 3.4) * brilho * (0.3 + dens) * 2.3;
+  // gradação prateada: tira um pouco da saturação e esfria de leve
+  float lum = dot(cor, vec3(0.2126, 0.7152, 0.0722));
+  cor = mix(vec3(lum), cor, 0.62) * vec3(0.95, 0.99, 1.06);
   float alfa = clamp(dens * 0.9 + 0.12 * mergulho, 0.0, 0.93);
-  return vec4(cor * alfa, alfa);
+  // o gás é opaco mesmo onde brilha pouco: a parte da frente do disco esconde o que passa por baixo
+  float opaco = clamp(alfa + 0.45 * smoothstep(R_OUT, R_OUT * 0.6, r) * mergulho, 0.0, 0.95);
+  return vec4(cor * alfa, opaco);
 }
 
-// fundo interestelar: azul profundo, véus verde-azulados, faixa da galáxia e estrelas
+// estrelas nítidas em qualquer resolução (desenhadas na hora, não vêm da textura)
 vec3 estrelas(vec3 d, float escala, float limiar, float tw) {
   vec3 p = d * escala;
   vec3 c = floor(p);
@@ -118,23 +126,42 @@ vec3 estrelas(vec3 d, float escala, float limiar, float tw) {
   if (h < limiar) return vec3(0.0);
   vec3 o = vec3(hash13(c + 1.3), hash13(c + 7.1), hash13(c + 3.7)) - 0.5;
   float dist = length(fract(p) - 0.5 - o * 0.55);
-  float forca = pow((h - limiar) / (1.0 - limiar), 2.2);
-  float brilho = smoothstep(0.32, 0.0, dist) * (0.35 + 4.0 * forca);
-  brilho *= 0.75 + 0.25 * sin(uTime * (1.0 + h * 3.0) + h * 80.0) * tw;
+  float forca = pow((h - limiar) / (1.0 - limiar), 2.6);
+  float brilho = smoothstep(0.3, 0.0, dist) * (0.25 + 4.0 * forca);
+  brilho *= 0.8 + 0.2 * sin(uTime * (1.0 + h * 3.0) + h * 80.0) * tw;
   float k = hash13(c + 5.0);
-  vec3 cor = k < 0.6 ? vec3(0.78, 0.86, 1.0) : (k < 0.85 ? vec3(1.0, 0.97, 0.92) : vec3(1.0, 0.82, 0.6));
+  vec3 cor = k < 0.55 ? vec3(0.82, 0.88, 1.0) : (k < 0.85 ? vec3(1.0, 0.98, 0.95) : vec3(1.0, 0.86, 0.7));
   return cor * brilho;
 }
+
+#ifdef COM_CEU
+uniform sampler2D uCeu;   // céu gerado (ferramentas/cosmos.mjs): plano tangente, ±45° em volta de −z
+uniform float uCeuMix;    // 0 enquanto a imagem não chegou
+uniform mat3 uMundo;      // referencial do disco → mundo
+#endif
+
+// fundo: céu de verdade (galáxias, nebulosa) na frente da câmera; no resto, véus suaves
 vec3 fundo(vec3 d) {
-  float n = fbm(d * 2.3);
-  float n2 = fbm(d * 5.2 + n * 1.7);
-  vec3 col = vec3(0.003, 0.006, 0.014);
-  col += vec3(0.016, 0.045, 0.1) * smoothstep(0.4, 0.95, n);
-  col += vec3(0.006, 0.055, 0.07) * smoothstep(0.55, 1.0, n2);
-  col += vec3(0.04, 0.02, 0.05) * smoothstep(0.7, 1.05, n * n2 * 1.6); // um toque de violeta distante
-  float faixa = exp(-pow((d.y * 0.92 + d.x * 0.28) * 3.4, 2.0));
-  col += vec3(0.05, 0.062, 0.085) * faixa * (0.25 + 0.95 * n2);
-  col += estrelas(d, 220.0, 0.982, 1.0) + estrelas(d, 520.0, 0.99, 0.6) * 0.7;
+  float peso = 0.0;
+  vec3 col = vec3(0.0);
+#ifdef COM_CEU
+  vec3 m = uMundo * d;
+  float fz = -m.z;
+  if (fz > 0.25) {
+    vec2 uv = m.xy / fz;
+    float borda = max(abs(uv.x), abs(uv.y));
+    peso = smoothstep(0.25, 0.5, fz) * smoothstep(1.0, 0.86, borda) * uCeuMix;
+    if (peso > 0.0) col = texture2D(uCeu, uv * 0.5 + 0.5).rgb * 0.85 * peso;
+  }
+#endif
+  if (peso < 1.0) {
+    float n = fbm(d * 2.3);
+    vec3 neb = vec3(0.002, 0.003, 0.009);
+    neb += vec3(0.02, 0.03, 0.09) * smoothstep(0.45, 0.95, n);
+    neb += vec3(0.035, 0.018, 0.07) * smoothstep(0.62, 1.0, n * fbm(d * 5.2 + 3.0) * 1.7);
+    col += neb * (1.0 - peso);
+  }
+  col += estrelas(d, 220.0, 0.984, 1.0) + estrelas(d, 520.0, 0.991, 0.6) * 0.65 + estrelas(d, 1100.0, 0.994, 0.3) * 0.35;
   return col;
 }
 
@@ -155,7 +182,7 @@ vec4 tracar(vec3 pos, vec3 vel, float comFundo) {
     if (abs(pos.y) < 1.2 && rp < R_OUT && rp > R_MIN) {
       float esp = 0.12 + 0.05 * rp;
       float perfil = smoothstep(R_MIN, R_ISCO, rp) * smoothstep(R_OUT, 4.0, rp) * pow(R_ISCO / max(rp, R_ISCO), 1.6);
-      cor += (1.0 - alfa) * vec3(1.0, 0.66, 0.34) * exp(-abs(pos.y) / esp) * perfil * dt * 0.04;
+      cor += (1.0 - alfa) * vec3(0.72, 0.82, 1.0) * exp(-abs(pos.y) / esp) * perfil * dt * 0.04;
     }
     vec3 a0 = -1.5 * h2 * pos / pow(r, 5.0);
     vec3 np = pos + vel * dt + 0.5 * a0 * dt * dt;
@@ -177,7 +204,7 @@ vec4 tracar(vec3 pos, vec3 vel, float comFundo) {
     }
   }
   float cobertura = escapou ? alfa : 1.0; // o que não escapou caiu no buraco (preto)
-  if (escapou) cor += (1.0 - alfa) * fundo(normalize(vel)) * comFundo;
+  if (escapou && comFundo > 0.5) cor += (1.0 - alfa) * fundo(normalize(vel));
   return vec4(cor, comFundo > 0.5 ? 1.0 : cobertura);
 }
 
@@ -200,6 +227,7 @@ export const gargantuaTela = (passos: number, oitavas: number) => ({
   fragmentShader: /* glsl */ `
     #define STEPS ${passos}
     #define OCTAVES ${oitavas}
+    #define COM_CEU
     uniform vec3 uCamPos;
     uniform mat4 uCamWorld;
     uniform mat4 uProjInv;
@@ -246,6 +274,3 @@ export const gargantuaSprite = (passos: number, oitavas: number) => ({
     }
   `,
 });
-
-/** Sombra do buraco negro vista de longe: raio crítico de impacto, em rs */
-export const RAIO_SOMBRA = 2.598;

@@ -2,15 +2,18 @@
 
 import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Bloom, EffectComposer } from "@react-three/postprocessing";
+import { Bloom, ChromaticAberration, EffectComposer, Noise } from "@react-three/postprocessing";
+import { BlendFunction } from "postprocessing";
 import * as THREE from "three";
+import { asset } from "@/lib/asset";
 import { rendererSoftware, type Tier } from "@/lib/useDeviceTier";
 import { QUALIDADE, damp, ease, type Q } from "@/components/three/partes";
 import { heroState } from "./heroState";
-import { RAIO_SOMBRA, gargantuaTela } from "./shaders/gargantua";
+import { gargantuaTela } from "./shaders/gargantua";
 
 const INCLINACAO = 0.035; // o disco quase de lado, como no Gargantua
 const GIRO = -0.1; // leve diagonal na composição
+const ABERRACAO = new THREE.Vector2(0.0009, 0.0006);
 
 /* ---------------- o buraco negro: um triângulo que cobre a tela e roda o ray tracer ---------------- */
 function Gargantua({ q }: { q: Q }) {
@@ -33,18 +36,42 @@ function Gargantua({ q }: { q: Q }) {
         uDisco: { value: new THREE.Matrix3() },
         uTime: { value: 0 },
         uPhase: { value: 0 },
-        uDoppler: { value: 0.72 },
-        uExposure: { value: 1.22 },
+        uDoppler: { value: 0.8 },
+        uExposure: { value: 1.25 },
+        uCeu: { value: null as THREE.Texture | null },
+        uCeuMix: { value: 0 },
+        uMundo: { value: new THREE.Matrix3() },
       },
       depthTest: false,
       depthWrite: false,
     });
   }, [q]);
+
+  // céu de verdade (galáxias e nebulosa geradas por ferramentas/cosmos.mjs): entra com um fade quando chega
+  const [ceu, setCeu] = useState<THREE.Texture | null>(null);
+  useEffect(() => {
+    let vivo = true;
+    let tex: THREE.Texture | null = null;
+    new THREE.TextureLoader().load(asset(q === "low" ? "/cosmos/ceu-1024.webp" : "/cosmos/ceu-2048.webp"), (t) => {
+      tex = t;
+      if (!vivo) return t.dispose();
+      t.colorSpace = THREE.NoColorSpace; // o shader usa os valores como estão (a imagem já vem revelada)
+      t.wrapS = t.wrapT = THREE.ClampToEdgeWrapping;
+      t.anisotropy = 4;
+      setCeu(t);
+    });
+    return () => {
+      vivo = false;
+      tex?.dispose();
+    };
+  }, [q]);
+  useEffect(() => {
+    mat.uniforms.uCeu.value = ceu;
+  }, [ceu, mat]);
   const rot = useMemo(() => new THREE.Matrix4(), []);
   const euler = useMemo(() => new THREE.Euler(), []);
   const tilt = useRef({ x: INCLINACAO, z: GIRO });
   const vel = useRef(1);
-  const proj = useMemo(() => new THREE.Vector3(), []);
   const alvo = useMemo(() => new THREE.Vector3(), []);
 
   useFrame((_, dtRaw) => {
@@ -57,10 +84,13 @@ function Gargantua({ q }: { q: Q }) {
     vel.current = damp(vel.current, 1 + 2.2 * e, 4, dt);
     u.uPhase.value += dt * vel.current;
     u.uTime.value += dt;
+    if (u.uCeu.value) u.uCeuMix.value = Math.min(1, u.uCeuMix.value + dt * 0.8);
 
-    // câmera: parallax do mouse + dolly em direção ao horizonte (a ~31 rs de distância)
+    // câmera: parallax do mouse + uma deriva lenta (a lente redesenha o céu o tempo todo)
+    // + dolly em direção ao horizonte (a ~31 rs de distância)
+    const t = u.uTime.value;
     const longe = size.width / size.height < 0.8 ? 54 : 31;
-    alvo.set(heroState.px * 3.2, 2.8 - heroState.py * 1.6, THREE.MathUtils.lerp(longe, 6.2, e));
+    alvo.set(heroState.px * 3.2 + Math.sin(t * 0.07) * 1.1, 2.1 - heroState.py * 1.3 + Math.sin(t * 0.05 + 1) * 0.4, THREE.MathUtils.lerp(longe, 6.2, e));
     cam.position.x = damp(cam.position.x, alvo.x, 3, dt);
     cam.position.y = damp(cam.position.y, alvo.y, 3, dt);
     cam.position.z = damp(cam.position.z, alvo.z, 6, dt);
@@ -76,25 +106,13 @@ function Gargantua({ q }: { q: Q }) {
     tilt.current.x = damp(tilt.current.x, INCLINACAO + heroState.py * 0.025, 2.5, dt);
     tilt.current.z = damp(tilt.current.z, GIRO - heroState.px * 0.03, 2.5, dt);
     euler.set(tilt.current.x, 0, tilt.current.z);
-    rot.makeRotationFromEuler(euler).transpose(); // mundo → disco
+    rot.makeRotationFromEuler(euler);
+    u.uMundo.value.setFromMatrix4(rot); // disco → mundo
+    rot.transpose(); // mundo → disco
     u.uDisco.value.setFromMatrix4(rot);
     u.uCamPos.value.copy(cam.position);
     u.uCamWorld.value.copy(cam.matrixWorld);
     u.uProjInv.value.copy(cam.projectionMatrixInverse);
-
-    // anel gótico: acompanha o centro e o tamanho real da sombra na tela
-    const ring = heroState.ring;
-    if (ring) {
-      proj.set(0, 0, 0).project(cam);
-      const d = cam.position.length();
-      const ang = Math.asin(Math.min(0.99, RAIO_SOMBRA / d));
-      const sombraPx = (Math.tan(ang) / Math.tan(THREE.MathUtils.degToRad(cam.fov / 2))) * (size.height / 2);
-      const cx = (proj.x * 0.5 + 0.5) * size.width;
-      const cy = (1 - (proj.y * 0.5 + 0.5)) * size.height;
-      const s = Math.min(sombraPx * 2.25, size.width * 0.46) / 245;
-      ring.style.transform = `translate3d(${(cx - size.width / 2).toFixed(1)}px, ${(cy - size.height * heroState.bhY).toFixed(1)}px, 0) scale(${s.toFixed(3)})`;
-      ring.style.opacity = String(1 - Math.min(1, Math.max(0, (p - 0.08) / 0.35)));
-    }
   });
 
   return (
@@ -135,7 +153,10 @@ function Cena({ q, onLento, onPronto, vigia }: { q: Q; onLento: (mediana: number
       <Vigia onLento={onLento} onPronto={onPronto} ligado={vigia} />
       {q !== "low" && (
         <EffectComposer multisampling={0} enableNormalPass={false}>
-          <Bloom mipmapBlur intensity={q === "high" ? 0.6 : 0.5} luminanceThreshold={0.6} luminanceSmoothing={0.3} radius={0.78} />
+          <Bloom mipmapBlur intensity={q === "high" ? 0.62 : 0.5} luminanceThreshold={0.58} luminanceSmoothing={0.3} radius={0.8} />
+          {/* lente de verdade: uma leve separação de cores nas bordas e grão de filme */}
+          <ChromaticAberration offset={ABERRACAO} radialModulation modulationOffset={0.35} />
+          <Noise premultiply blendFunction={BlendFunction.ADD} opacity={0.18} />
         </EffectComposer>
       )}
     </>
@@ -180,7 +201,7 @@ export default function SpaceVortexCanvas({ tier, trackRef, onPronto }: { tier: 
       linear
       dpr={dpr}
       frameloop={ativo ? "always" : "never"}
-      camera={{ fov: 40, near: 0.1, far: 400, position: [0, 2.8, 31] }}
+      camera={{ fov: 40, near: 0.1, far: 400, position: [0, 2.1, 31] }}
       gl={{ antialias: false, alpha: false, powerPreference: "high-performance", stencil: false, depth: false }}
       onCreated={({ gl }) => {
         // shader que não compila ou contexto perdido: fica o pôster

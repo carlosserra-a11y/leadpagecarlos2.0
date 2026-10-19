@@ -8,6 +8,4 @@ export const heroState = {
   py: 0,
   /** posição vertical do buraco negro na tela (0 = topo, 1 = base) */
   bhY: 0.34,
-  /** o canvas atualiza o anel gótico por aqui (posição e escala na tela) */
-  ring: null as HTMLDivElement | null,
 };

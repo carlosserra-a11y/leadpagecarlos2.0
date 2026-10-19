@@ -12,7 +12,8 @@ import { BRIEFING_VAZIO, emailValido, montarMensagem, type Briefing } from "@/li
 import { useClock } from "@/lib/useClock";
 import { cn } from "@/lib/cn";
 
-type Erros = Partial<Record<"nome" | "msg" | "email", string>>;
+// guarda a chave do texto (não o texto): trocar de idioma traduz o erro que já está na tela
+type Erros = Partial<Record<"nome" | "msg" | "email", "erroNome" | "erroMsg" | "erroEmail">>;
 
 function Chips<K extends string>({ name, legend, value, ops, onChange }: { name: string; legend: string; value: string; ops: Record<K, string>; onChange: (k: K) => void }) {
   return (
@@ -66,9 +67,9 @@ export function Contato({ qr }: { qr: React.ReactNode }) {
 
   const validar = (): boolean => {
     const e: Erros = {};
-    if (!b.nome.trim()) e.nome = f.erroNome;
-    if (b.msg.trim().length < 10) e.msg = f.erroMsg;
-    if (b.email.trim() && !emailValido(b.email)) e.email = f.erroEmail;
+    if (!b.nome.trim()) e.nome = "erroNome";
+    if (b.msg.trim().length < 10) e.msg = "erroMsg";
+    if (b.email.trim() && !emailValido(b.email)) e.email = "erroEmail";
     setErros(e);
     const primeiro = (["nome", "email", "msg"] as const).find((k) => e[k]);
     if (primeiro) form.current?.querySelector<HTMLElement>(`[name="${primeiro}"]`)?.focus();
@@ -92,11 +93,11 @@ export function Contato({ qr }: { qr: React.ReactNode }) {
     toast(ok ? t.recrutador.emailCopiado(CONFIG.email) : t.recrutador.falhou(CONFIG.email));
   };
 
-  const campo = "w-full rounded-xl border border-white/15 bg-void/60 px-4 py-3 text-text placeholder:text-muted/70 transition-colors focus:border-gold focus:outline-none aria-[invalid=true]:border-[#ff8a80]";
+  const campo = "w-full rounded-xl border border-white/15 bg-void/60 px-4 py-3 text-text placeholder:text-muted/70 transition-colors focus:border-silver focus:outline-none aria-[invalid=true]:border-[#ff8a80]";
 
   return (
     <section id="contato" aria-labelledby="contato-t" className="section">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_50%_at_20%_20%,rgba(10,31,61,.9),transparent),radial-gradient(40%_40%_at_90%_80%,rgba(242,193,78,.06),transparent)]" />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_50%_at_20%_20%,rgba(10,31,61,.9),transparent),radial-gradient(40%_40%_at_90%_80%,rgba(176,208,255,.06),transparent)]" />
       <div className="wrap relative grid gap-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16">
         <div className="grid content-start gap-8">
           <SectionHead id="contato-t" k={t.contato.k} t={t.contato.t} p={t.contato.p} />
@@ -107,14 +108,14 @@ export function Contato({ qr }: { qr: React.ReactNode }) {
               {t.contato.disponivel}
             </span>
             <span className="mono text-muted">
-              {t.contato.agora}: <span className="tabular-nums text-gold-hi">{hora || "--:--"}</span>
+              {t.contato.agora}: <span className="tabular-nums text-silver-hi">{hora || "--:--"}</span>
             </span>
             {CONFIG.resposta[lang] && <span className="text-muted">{CONFIG.resposta[lang]}</span>}
           </div>
 
           <ul className="grid gap-3">
             <li data-reveal>
-              <a href={waLink(t.contato.msg.padrao)} target="_blank" rel="noopener noreferrer" className="glass glass-gold group flex items-center gap-4 rounded-2xl p-5 no-underline transition-transform duration-500 hover:-translate-y-0.5">
+              <a href={waLink(t.contato.msg.padrao)} target="_blank" rel="noopener noreferrer" className="glass glass-chrome group flex items-center gap-4 rounded-2xl p-5 no-underline transition-transform duration-500 hover:-translate-y-0.5">
                 <span className="grid size-12 flex-none place-items-center rounded-xl bg-[#25d366]/15 text-[#5ee08f]">
                   <WhatsappIcon size={22} />
                 </span>
@@ -124,24 +125,28 @@ export function Contato({ qr }: { qr: React.ReactNode }) {
                   </span>
                   <span className="text-sm text-muted">{t.contato.chWa}</span>
                 </span>
-                <ArrowUpRight size={18} className="ms-auto flex-none text-gold transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
+                <ArrowUpRight size={18} className="ms-auto flex-none text-silver transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
                 <span className="sr-only">({t.geral.abreNovaAba})</span>
               </a>
             </li>
             <li data-reveal style={{ "--d": 1 } as React.CSSProperties} className="glass flex items-center gap-4 rounded-2xl p-5">
-              <span className="grid size-12 flex-none place-items-center rounded-xl bg-gold/10 text-gold">
+              <span className="grid size-12 flex-none place-items-center rounded-xl bg-silver/10 text-silver">
                 <Mail size={20} aria-hidden="true" />
               </span>
               <a href={`mailto:${CONFIG.email}`} className="grid min-w-0 no-underline">
-                <span className="font-semibold break-all text-text">{CONFIG.email}</span>
+                {/* quebra no "@" quando não cabe (e não no meio do domínio) */}
+                <span className="font-semibold break-words text-text">
+                  {CONFIG.email.split("@")[0]}@<wbr />
+                  {CONFIG.email.split("@")[1]}
+                </span>
                 <span className="text-sm text-muted">{t.contato.chEmail}</span>
               </a>
-              <button type="button" onClick={copiarEmail} className="needs-js ms-auto grid size-11 flex-none place-items-center rounded-full border border-line hover:border-gold" aria-label={`${t.contato.copiar}: ${CONFIG.email}`}>
+              <button type="button" onClick={copiarEmail} className="needs-js ms-auto grid size-11 flex-none place-items-center rounded-full border border-line hover:border-silver" aria-label={`${t.contato.copiar}: ${CONFIG.email}`}>
                 <Copy size={16} aria-hidden="true" />
               </button>
             </li>
             <li data-reveal style={{ "--d": 2 } as React.CSSProperties} className="grid gap-3 sm:grid-cols-2">
-              <a href={ghLink()} target="_blank" rel="noopener noreferrer" className="glass flex items-center gap-3 rounded-2xl p-4 no-underline hover:border-gold/40">
+              <a href={ghLink()} target="_blank" rel="noopener noreferrer" className="glass flex items-center gap-3 rounded-2xl p-4 no-underline hover:border-silver/40">
                 <GithubIcon size={20} />
                 <span className="grid">
                   <span className="font-semibold text-text">GitHub</span>
@@ -150,7 +155,7 @@ export function Contato({ qr }: { qr: React.ReactNode }) {
                 <span className="sr-only">({t.geral.abreNovaAba})</span>
               </a>
               {CONFIG.linkedin && (
-                <a href={CONFIG.linkedin} target="_blank" rel="noopener noreferrer" className="glass flex items-center gap-3 rounded-2xl p-4 no-underline hover:border-gold/40">
+                <a href={CONFIG.linkedin} target="_blank" rel="noopener noreferrer" className="glass flex items-center gap-3 rounded-2xl p-4 no-underline hover:border-silver/40">
                   <LinkedinIcon size={20} />
                   <span className="grid">
                     <span className="font-semibold text-text">LinkedIn</span>
@@ -172,12 +177,12 @@ export function Contato({ qr }: { qr: React.ReactNode }) {
 
         {/* Briefing: vira mensagem pronta no WhatsApp ou no e-mail */}
         <div data-reveal style={{ "--d": 2 } as React.CSSProperties}>
-          <form ref={form} onSubmit={enviarWa} noValidate className="needs-js glass glass-gold grid gap-6 rounded-[28px] p-[clamp(20px,3.5vw,40px)]" aria-labelledby={`${uid}-t`}>
+          <form ref={form} onSubmit={enviarWa} noValidate className="needs-js glass glass-chrome grid gap-6 rounded-[28px] p-[clamp(20px,3.5vw,40px)]" aria-labelledby={`${uid}-t`}>
             <div className="flex items-center justify-between gap-4">
               <h3 id={`${uid}-t`} className="title text-[clamp(1.8rem,3vw,2.4rem)] text-text">
                 {f.t}
               </h3>
-              <Send size={20} className="text-gold" aria-hidden="true" />
+              <Send size={20} className="text-silver" aria-hidden="true" />
             </div>
 
             <Chips name="assunto" legend={f.sobre} value={b.assunto} ops={f.sobreOps} onChange={(v) => set("assunto", v)} />
@@ -199,7 +204,7 @@ export function Contato({ qr }: { qr: React.ReactNode }) {
                 <input id={`${uid}-nome`} name="nome" autoComplete="name" value={b.nome} onChange={(e) => set("nome", e.target.value)} className={campo} aria-invalid={!!erros.nome} aria-describedby={erros.nome ? `${uid}-e-nome` : undefined} required />
                 {erros.nome && (
                   <p id={`${uid}-e-nome`} className="text-sm text-[#ffb4ab]">
-                    {erros.nome}
+                    {f[erros.nome]}
                   </p>
                 )}
               </div>
@@ -216,7 +221,7 @@ export function Contato({ qr }: { qr: React.ReactNode }) {
                 <input id={`${uid}-email`} name="email" type="email" inputMode="email" autoComplete="email" value={b.email} onChange={(e) => set("email", e.target.value)} className={campo} aria-invalid={!!erros.email} aria-describedby={erros.email ? `${uid}-e-email` : undefined} />
                 {erros.email && (
                   <p id={`${uid}-e-email`} className="text-sm text-[#ffb4ab]">
-                    {erros.email}
+                    {f[erros.email]}
                   </p>
                 )}
               </div>
@@ -224,13 +229,13 @@ export function Contato({ qr }: { qr: React.ReactNode }) {
                 <label htmlFor={`${uid}-msg`} className="text-sm text-text/85">
                   {f.msg}
                 </label>
-                <textarea id={`${uid}-msg`} name="msg" rows={4} value={b.msg} onChange={(e) => set("msg", e.target.value)} className={cn(campo, "resize-y")} aria-invalid={!!erros.msg} aria-describedby={`${uid}-dica${erros.msg ? ` ${uid}-e-msg` : ""}`} required minLength={10} />
+                <textarea id={`${uid}-msg`} name="msg" rows={4} value={b.msg} onChange={(e) => set("msg", e.target.value)} className={cn(campo, "resize-y")} aria-invalid={!!erros.msg} aria-describedby={`${uid}-dica${erros.msg ? ` ${uid}-e-msg` : ""}`} required minLength={10} maxLength={1500} />
                 <p id={`${uid}-dica`} className="text-xs text-muted">
                   {f.msgDica}
                 </p>
                 {erros.msg && (
                   <p id={`${uid}-e-msg`} className="text-sm text-[#ffb4ab]">
-                    {erros.msg}
+                    {f[erros.msg]}
                   </p>
                 )}
               </div>
@@ -247,7 +252,7 @@ export function Contato({ qr }: { qr: React.ReactNode }) {
             </div>
 
             <div className="flex flex-wrap gap-3">
-              <button type="submit" className="btn btn-gold min-h-13 flex-1">
+              <button type="submit" className="btn btn-chrome min-h-13 flex-1">
                 <WhatsappIcon size={18} /> {f.enviarWa}
               </button>
               <button type="button" onClick={enviarEmail} className="btn btn-ghost min-h-13 flex-1">
@@ -257,7 +262,7 @@ export function Contato({ qr }: { qr: React.ReactNode }) {
           </form>
 
           {/* sem JavaScript o formulário vira um link direto */}
-          <a href={waLink(t.contato.msg.padrao)} className="no-js-only btn btn-gold w-full min-h-14 text-base">
+          <a href={waLink(t.contato.msg.padrao)} className="no-js-only btn btn-chrome w-full min-h-14 text-base">
             <WhatsappIcon size={20} /> {f.semJs}
           </a>
         </div>

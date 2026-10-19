@@ -1,14 +1,14 @@
 {
   "name": "leadpagecarlos2-ferramentas",
   "private": true,
-  "description": "Gera a marca (logo, favicon, ícones), o pôster do hero a partir da própria cena 3D e a imagem de compartilhamento (og.png).",
+  "description": "Gera a marca (logo, favicon, ícones), o espaço (galáxias, campo profundo, céu do buraco negro), o pôster do hero a partir da própria cena 3D e a imagem de compartilhamento (og.jpg).",
   "type": "module",
   "scripts": {
     "fontes": "node baixar-fontes.mjs",
     "marca": "node marca.mjs",
     "poster": "node poster.mjs",
     "og": "node og.mjs",
-    "anel": "node anel.mjs",
+    "cosmos": "node cosmos.mjs",
     "nome": "node nome.mjs"
   },
   "dependencies": {

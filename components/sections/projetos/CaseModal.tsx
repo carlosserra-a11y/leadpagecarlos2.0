@@ -8,6 +8,15 @@ import { GithubIcon } from "@/components/ui/BrandIcons";
 import { asset } from "@/lib/asset";
 import { PROJETOS, ghLink, pagesLink } from "@/lib/dados";
 
+/* Safari antes do 15.4 não tem showModal/close: lá o diálogo abre pelo atributo e fecha do mesmo jeito */
+function fecharDialogo(d: HTMLDialogElement) {
+  if (typeof d.close === "function") d.close();
+  else {
+    d.removeAttribute("open");
+    d.dispatchEvent(new Event("close"));
+  }
+}
+
 /* Estudo de caso em <dialog> nativo: foco preso, Esc fecha, foco volta para quem abriu */
 export function CaseModal({ index, onChange, onClose }: { index: number | null; onChange: (i: number) => void; onClose: () => void }) {
   const { t, lang } = useLang();
@@ -24,8 +33,9 @@ export function CaseModal({ index, onChange, onClose }: { index: number | null; 
       if (typeof d.showModal === "function") d.showModal();
       else d.setAttribute("open", "");
       d.scrollTop = 0;
+      dispatchEvent(new Event("lp2-modal"));
     } else if (!aberto && d.open) {
-      d.close();
+      fecharDialogo(d);
     }
   }, [aberto]);
 
@@ -35,6 +45,7 @@ export function CaseModal({ index, onChange, onClose }: { index: number | null; 
     if (!d) return;
     const fechou = () => {
       getLenis()?.start();
+      dispatchEvent(new Event("lp2-modal"));
       onClose();
       const o = opener.current;
       if (o && o.isConnected) o.focus({ preventScroll: true });
@@ -74,7 +85,7 @@ export function CaseModal({ index, onChange, onClose }: { index: number | null; 
       data-lenis-prevent
       onClick={(e) => {
         // clique fora do conteúdo (no fundo) fecha
-        if (e.target === ref.current) ref.current?.close();
+        if (e.target === ref.current) fecharDialogo(ref.current);
       }}
     >
       {aberto && (
@@ -88,7 +99,7 @@ export function CaseModal({ index, onChange, onClose }: { index: number | null; 
                 {p.nome}
               </h3>
             </div>
-            <button type="button" onClick={() => ref.current?.close()} className="grid size-11 flex-none place-items-center rounded-full border border-line hover:border-gold" aria-label={t.caso.fechar} autoFocus>
+            <button type="button" onClick={() => ref.current && fecharDialogo(ref.current)} className="grid size-11 flex-none place-items-center rounded-full border border-line hover:border-silver" aria-label={t.caso.fechar} autoFocus>
               <X size={20} aria-hidden="true" />
             </button>
           </div>
@@ -118,7 +129,7 @@ export function CaseModal({ index, onChange, onClose }: { index: number | null; 
               <ul className="grid gap-2 text-text/80">
                 {x.feito.map((f) => (
                   <li key={f} className="flex gap-3">
-                    <span className="mt-[0.55em] size-1.5 flex-none rounded-full bg-gold" aria-hidden="true" />
+                    <span className="mt-[0.55em] size-1.5 flex-none rounded-full bg-silver" aria-hidden="true" />
                     {f}
                   </li>
                 ))}
@@ -152,7 +163,7 @@ export function CaseModal({ index, onChange, onClose }: { index: number | null; 
               <ol className="grid gap-3 sm:grid-cols-3">
                 {p.evolucao.map((v) => (
                   <li key={v.v} className="glass rounded-2xl p-4">
-                    <p className="gothic gold-text text-3xl">v{v.v}</p>
+                    <p className="gothic chrome-text text-3xl">v{v.v}</p>
                     <p className="mt-2 text-sm text-text/75">{v.txt[lang]}</p>
                     <a href={ghLink(v.repo)} target="_blank" rel="noopener noreferrer" className="link-arrow mt-1 text-sm">
                       {v.repo}
@@ -177,7 +188,7 @@ export function CaseModal({ index, onChange, onClose }: { index: number | null; 
           </div>
 
           <div className="flex flex-wrap items-center gap-3 border-t border-line pt-6">
-            <a href={pagesLink(p.repo)} target="_blank" rel="noopener noreferrer" className="btn btn-gold">
+            <a href={pagesLink(p.repo)} target="_blank" rel="noopener noreferrer" className="btn btn-chrome">
               {t.projetos.live} <ArrowUpRight size={16} aria-hidden="true" />
               <span className="sr-only">({t.geral.abreNovaAba})</span>
             </a>

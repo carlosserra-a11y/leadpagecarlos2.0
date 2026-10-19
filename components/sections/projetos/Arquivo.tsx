@@ -1,8 +1,10 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { ArrowUpRight } from "lucide-react";
 import { useLang } from "@/components/providers/LangProvider";
+import { scrollToTarget } from "@/components/providers/SmoothScroll";
 import { GithubIcon } from "@/components/ui/BrandIcons";
 import { CONFIG, REPOS, type Repo, type Lang, ghLink, pagesLink } from "@/lib/dados";
 import { cn } from "@/lib/cn";
@@ -61,17 +63,23 @@ export function Arquivo({ novos }: { novos: Repo[] }) {
         </div>
       </div>
 
+      {/* o leitor de tela ouve só a contagem quando o filtro muda (não a lista inteira) */}
+      <p className="sr-only" aria-live="polite">
+        {t.arquivo.filters[filtro]}: {linhas.length}
+      </p>
       {/* todas as linhas vão no HTML (sem JS aparece tudo); com JS o CSS recolhe depois da 8ª */}
-      <ol ref={listaRef} className="arquivo-lista border-t border-line" data-recolhida={!todos} aria-live="polite">
+      <ol ref={listaRef} className="arquivo-lista border-t border-line" data-recolhida={!todos}>
         {linhas.length === 0 && <li className="py-8 text-muted">{t.arquivo.vazio}</li>}
-        {linhas.map((r) => (
+        {linhas.map((r) => {
+          const titulo = lang === "en" && r.te ? r.te : r.t;
+          return (
           <li key={r.n} className="group grid grid-cols-[1fr_auto] items-start gap-x-6 gap-y-2 border-b border-line py-5 transition-colors hover:bg-white/[0.02] md:grid-cols-[110px_1fr_110px_auto]">
             <time className="mono order-3 text-xs text-muted md:order-none md:pt-1.5" dateTime={r.at}>
               {data(r.at, lang)}
             </time>
             <div className="col-span-2 min-w-0 md:col-span-1">
               <p className="flex flex-wrap items-center gap-2 font-semibold text-text">
-                {lang === "en" && r.te ? r.te : r.t}
+                {titulo}
                 {r.novo && <span className="tag !text-[0.65rem]">{t.arquivo.novo}</span>}
               </p>
               <p className="mt-1 text-[0.95rem] text-muted">{(lang === "en" ? r.de : r.d) || t.arquivo.novoDesc}</p>
@@ -82,19 +90,20 @@ export function Arquivo({ novos }: { novos: Repo[] }) {
                 <a href={pagesLink(r.n)} target="_blank" rel="noopener noreferrer" className={cn("grid size-11 place-items-center rounded-full border border-line text-text/80 hover:border-gold hover:text-gold-hi")}>
                   <ArrowUpRight size={16} aria-hidden="true" />
                   <span className="sr-only">
-                    {t.arquivo.site}: {r.t} ({t.geral.abreNovaAba})
+                    {t.arquivo.site}: {titulo} ({t.geral.abreNovaAba})
                   </span>
                 </a>
               )}
               <a href={ghLink(r.n)} target="_blank" rel="noopener noreferrer" className="grid size-11 place-items-center rounded-full border border-line text-text/80 hover:border-gold hover:text-gold-hi">
                 <GithubIcon size={15} />
                 <span className="sr-only">
-                  {t.arquivo.codigo}: {r.t} ({t.geral.abreNovaAba})
+                  {t.arquivo.codigo}: {titulo} ({t.geral.abreNovaAba})
                 </span>
               </a>
             </div>
           </li>
-        ))}
+          );
+        })}
       </ol>
 
       {linhas.length > LIMITE && (
@@ -102,9 +111,14 @@ export function Arquivo({ novos }: { novos: Repo[] }) {
           type="button"
           className="needs-js btn btn-ghost justify-self-center"
           aria-expanded={todos}
-          onClick={() => {
-            setTodos((v) => !v);
-            if (todos) listaRef.current?.scrollIntoView({ block: "nearest" });
+          onClick={(e) => {
+            if (!todos) return setTodos(true);
+            // recolhe primeiro e depois compensa a rolagem: o botão fica no mesmo lugar da tela (e com o foco)
+            const btn = e.currentTarget;
+            const antes = btn.getBoundingClientRect().top;
+            flushSync(() => setTodos(false));
+            const depois = btn.getBoundingClientRect().top;
+            scrollToTarget(Math.max(0, scrollY + depois - antes), true);
           }}
         >
           {todos ? t.arquivo.menos : t.arquivo.mais(linhas.length)}

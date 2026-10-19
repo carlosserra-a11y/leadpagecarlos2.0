@@ -49,3 +49,6 @@ next-env.d.ts
 # ferramentas (fontes baixadas e dependências próprias)
 /ferramentas/node_modules
 /ferramentas/.cache
+
+# worktrees temporários do agente de código
+/.claude/worktrees/

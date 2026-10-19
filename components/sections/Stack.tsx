@@ -28,16 +28,16 @@ export function Stack() {
           {STACK.map((area, i) => {
             const pts = constelacao(i * 7919 + 11, area.techs.length);
             return (
-              <li key={area.id} className="constel-card glass group grid gap-4 rounded-[24px] p-6" data-reveal style={{ "--d": i % 3 } as React.CSSProperties}>
+              <li key={area.id} className="constel-card glass group grid gap-4 rounded-[24px] p-6" data-reveal data-tilt="8" style={{ "--d": i % 3 } as React.CSSProperties}>
                 <svg className="constel h-[140px] w-full" viewBox="0 0 300 140" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
                   {pts.slice(1).map((pt, j) => (
                     <line key={j} x1={pts[j].x} y1={pts[j].y} x2={pt.x} y2={pt.y} pathLength={1} style={{ "--i": j } as React.CSSProperties} />
                   ))}
                   {pts.map((pt, j) => (
                     <g key={j}>
-                      <circle cx={pt.x} cy={pt.y} r={pt.r * 3.2} fill="rgba(242,193,78,.08)" className="!fill-[rgba(242,193,78,.08)]" />
+                      <circle cx={pt.x} cy={pt.y} r={pt.r * 3.2} fill="rgba(176,208,255,.08)" className="!fill-[rgba(176,208,255,.08)]" />
                       <circle cx={pt.x} cy={pt.y} r={pt.r} />
-                      <text x={pt.x} y={pt.y + (j % 2 === 0 ? -11 : 19)} textAnchor="middle" className="fill-muted font-mono text-[9px] tracking-wider transition-colors group-hover:fill-gold-hi">
+                      <text x={pt.x} y={pt.y + (j % 2 === 0 ? -11 : 19)} textAnchor="middle" className="fill-muted font-mono text-[9px] tracking-wider transition-colors group-hover:fill-silver-hi">
                         {area.techs[j]}
                       </text>
                     </g>

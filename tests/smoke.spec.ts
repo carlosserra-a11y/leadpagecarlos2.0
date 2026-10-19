@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 
-/* Erros do console que não são do site (rede bloqueada para a API do GitHub nos testes) */
+/* Avisos de bibliotecas que não são do site */
 const IGNORAR = [/THREE\.Clock/];
 
 function coletarErros(page: Page) {
@@ -13,11 +13,6 @@ function coletarErros(page: Page) {
 }
 
 const semIntro = (page: Page) => page.addInitScript(() => sessionStorage.setItem("lp2-intro", "1"));
-
-test.beforeEach(async ({ page }) => {
-  // sem rede externa nos testes: a API do GitHub responde "nenhum repositório novo"
-  await page.route("https://api.github.com/**", (r) => r.fulfill({ json: [] }));
-});
 
 test("carrega sem erros, com CSP, um h1 e sem rolagem lateral", async ({ page }) => {
   const erros = coletarErros(page);
@@ -49,9 +44,8 @@ test("CTAs levam aos lugares certos", async ({ page }) => {
 
 test("estudo de caso abre, troca de projeto, fecha e devolve o foco", async ({ page }) => {
   await semIntro(page);
-  await page.goto("./");
-  // no computador o carrossel vira a galáxia 3D depois da hidratação: espera a troca
-  await page.waitForFunction(() => innerWidth < 1024 || document.querySelector(".galaxy-track") || document.querySelector(".carousel"));
+  // sem 3D: o teste é do diálogo (a galáxia em WebGL por software deixaria tudo lento)
+  await page.goto("./?tier=off");
   await page.waitForTimeout(500);
   const botao = page.locator("#projetos").getByRole("button", { name: "Estudo de caso" }).first();
   await botao.scrollIntoViewIfNeeded();
@@ -61,9 +55,34 @@ test("estudo de caso abre, troca de projeto, fecha e devolve o foco", async ({ p
   await expect(dialogo.getByRole("heading", { level: 3 })).toHaveText("Figaro's Pizzaria 2.0");
   await page.keyboard.press("ArrowRight");
   await expect(dialogo.getByRole("heading", { level: 3 })).toHaveText("São Cristóvão 3.0");
+  // com o diálogo aberto a página atrás não rola
+  const antes = await page.evaluate(() => scrollY);
+  await page.mouse.move(20, 20);
+  await page.mouse.wheel(0, 900);
+  await page.waitForTimeout(400);
+  expect(await page.evaluate(() => scrollY)).toBe(antes);
   await page.keyboard.press("Escape");
   await expect(dialogo).toBeHidden();
   await expect(botao).toBeFocused();
+});
+
+test("menu leva à seção logo abaixo do cabeçalho e o teclado continua rolando", async ({ page, isMobile }) => {
+  test.skip(isMobile, "no celular o menu é outro (botão)");
+  await semIntro(page);
+  await page.goto("./?tier=off");
+  await page.getByRole("banner").getByRole("link", { name: "Serviços" }).click();
+  await expect.poll(() => page.evaluate(() => Math.round(document.getElementById("servicos")!.getBoundingClientRect().top)), { timeout: 5000 }).toBe(80);
+  await page.waitForTimeout(600);
+  const y = await page.evaluate(() => scrollY);
+  await page.keyboard.press("End");
+  await expect.poll(() => page.evaluate(() => scrollY), { timeout: 5000 }).toBeGreaterThan(y + 500);
+});
+
+test("o espaço do fundo entra depois da intro, com as galáxias", async ({ page }) => {
+  await semIntro(page);
+  await page.goto("./?tier=off");
+  await expect(page.locator(".cosmos")).toHaveAttribute("data-on", "", { timeout: 5000 });
+  expect(await page.locator(".cosmos [data-galaxia]").count()).toBeGreaterThan(5);
 });
 
 test("briefing monta a mensagem e valida os campos", async ({ page }) => {
@@ -75,7 +94,7 @@ test("briefing monta a mensagem e valida os campos", async ({ page }) => {
       return null;
     };
   });
-  await page.goto("./#contato");
+  await page.goto("./?tier=off#contato");
   const form = page.locator("#contato form");
   await form.getByRole("button", { name: "Enviar pelo WhatsApp" }).click();
   await expect(form.getByText("Escreva seu nome.")).toBeVisible();
@@ -96,7 +115,7 @@ test("briefing monta a mensagem e valida os campos", async ({ page }) => {
 
 test("troca para inglês sem recarregar", async ({ page }) => {
   await semIntro(page);
-  await page.goto("./");
+  await page.goto("./?tier=off");
   await page.getByRole("button", { name: "Read in English" }).click();
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
   await expect(page.getByRole("link", { name: "I want a website" })).toBeVisible();

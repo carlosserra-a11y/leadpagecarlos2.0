@@ -8,6 +8,7 @@ export async function copiar(texto: string): Promise<boolean> {
     await navigator.clipboard.writeText(texto);
     return true;
   } catch {
+    const foco = document.activeElement as HTMLElement | null; // o select() abaixo rouba o foco
     const ta = document.createElement("textarea");
     ta.value = texto;
     ta.setAttribute("readonly", "");
@@ -21,6 +22,7 @@ export async function copiar(texto: string): Promise<boolean> {
       ok = false;
     }
     ta.remove();
+    foco?.focus({ preventScroll: true });
     return ok;
   }
 }

@@ -29,9 +29,10 @@ export function Header() {
       raf = requestAnimationFrame(() => {
         const y = scrollY;
         setSolid(y > 40);
-        setHide(y > innerHeight * 0.9 && y > last + 4);
-        if (y < last - 4) setHide(false);
-        last = y;
+        // só muda com um movimento claro: os últimos quadros da rolagem suave (de 1 ou 2 px) não reabrem o cabeçalho
+        if (y > innerHeight * 0.9 && y > last + 4) setHide(true);
+        else if (y < last - 4 || y <= innerHeight * 0.9) setHide(false);
+        if (Math.abs(y - last) > 4 || y <= innerHeight * 0.9) last = y;
       });
     };
     on();
@@ -42,18 +43,29 @@ export function Header() {
     };
   }, []);
 
-  // Marca no menu a seção que está na tela
+  // Marca no menu a seção que está na tela (e desmarca fora delas: hero, processo, stack)
   useEffect(() => {
     const els = SECOES.map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
+    const vis = new Map<string, boolean>();
     const io = new IntersectionObserver(
       (entries) => {
-        for (const e of entries) if (e.isIntersecting) setAtivo(e.target.id);
+        for (const e of entries) vis.set(e.target.id, e.isIntersecting);
+        setAtivo(SECOES.find((id) => vis.get(id)) ?? "");
       },
       { rootMargin: "-45% 0px -50% 0px" },
     );
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
   }, []);
+
+  // Menu do celular: fecha sozinho se a tela crescer (giro do tablet, janela maior), porque some no desktop
+  useEffect(() => {
+    if (!aberto) return;
+    const mq = matchMedia("(min-width: 768px)");
+    const fecha = () => mq.matches && setAberto(false);
+    mq.addEventListener("change", fecha);
+    return () => mq.removeEventListener("change", fecha);
+  }, [aberto]);
 
   // Menu do celular: trava a rolagem, Esc fecha e o foco volta ao botão
   useEffect(() => {
@@ -115,7 +127,7 @@ export function Header() {
             {t.lang.btn}
             <span className="sr-only"> · {t.lang.label}</span>
           </button>
-          <a href={waLink(t.contato.msg.padrao)} target="_blank" rel="noopener noreferrer" className="btn btn-gold btn-sm hidden sm:inline-flex">
+          <a href={waLink(t.contato.msg.padrao)} target="_blank" rel="noopener noreferrer" className="btn btn-chrome btn-sm hidden sm:inline-flex">
             <WhatsappIcon size={16} />
             {t.cta.waShort}
           </a>
@@ -147,11 +159,11 @@ export function Header() {
               onClick={() => setAberto(false)}
               className={cn("title flex min-h-14 items-baseline gap-4 border-b border-line py-3 text-4xl text-text no-underline")}
             >
-              <span className="mono text-xs text-gold">0{i + 1}</span>
+              <span className="mono text-xs text-silver">0{i + 1}</span>
               {l.label}
             </a>
           ))}
-          <a href={waLink(t.contato.msg.padrao)} target="_blank" rel="noopener noreferrer" className="btn btn-gold mt-8">
+          <a href={waLink(t.contato.msg.padrao)} target="_blank" rel="noopener noreferrer" className="btn btn-chrome mt-8">
             <WhatsappIcon size={18} />
             {t.cta.wa}
           </a>

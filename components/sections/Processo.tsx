@@ -47,12 +47,12 @@ export function Processo() {
         </div>
 
         <ol ref={lista} className="relative grid gap-10 pl-14">
-          {/* a órbita: trilho apagado + traço dourado que cresce com a rolagem */}
+          {/* a órbita: trilho apagado + traço prateado que cresce com a rolagem */}
           <span aria-hidden="true" className="absolute bottom-3 left-[19px] top-3 w-px bg-white/10" />
           <span
             ref={traco}
             aria-hidden="true"
-            className="absolute bottom-3 left-[19px] top-3 w-px origin-top bg-gradient-to-b from-gold-hi via-gold to-ember shadow-[0_0_14px_rgba(242,193,78,.7)] transition-transform duration-300 ease-out"
+            className="absolute bottom-3 left-[19px] top-3 w-px origin-top bg-gradient-to-b from-silver-hi via-silver to-cosmic shadow-[0_0_14px_rgba(176,208,255,.7)] transition-transform duration-300 ease-out"
             style={{ transform: "scaleY(0)" }}
           />
           {PROCESSO.map((etapa, i) => (

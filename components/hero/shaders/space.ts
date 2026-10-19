@@ -14,7 +14,7 @@ export const stars = {
       gl_Position = projectionMatrix * mv;
       gl_PointSize = clamp(aSize * uPixelRatio * (55.0 / -mv.z), 1.0, 9.0 * uPixelRatio);
       vTw = 0.6 + 0.4 * sin(uTime * (0.6 + aSeed * 2.4) + aSeed * 61.0);
-      vCol = aSeed < 0.18 ? ${vec3(COR.ice)} : aSeed > 0.9 ? ${vec3(COR.goldHi)} : vec3(1.0, 0.97, 0.93);
+      vCol = aSeed < 0.18 ? ${vec3(COR.ice)} : aSeed > 0.9 ? ${vec3(COR.silverHi)} : vec3(1.0, 0.97, 0.93);
     }
   `,
   fragmentShader: /* glsl */ `

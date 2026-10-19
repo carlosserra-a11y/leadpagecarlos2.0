@@ -27,10 +27,10 @@ function letras(texto, cx, cy, largura) {
 const defs = `
   <defs>
     <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
-      <stop offset=".1" stop-color="#fff6d6"/><stop offset=".55" stop-color="#f2c14e"/><stop offset="1" stop-color="#b06d1a"/>
+      <stop offset=".1" stop-color="#ffffff"/><stop offset=".55" stop-color="#c9d6e8"/><stop offset="1" stop-color="#7c889b"/>
     </linearGradient>
     <radialGradient id="v" cx=".5" cy=".5" r=".5">
-      <stop offset=".6" stop-color="#010307"/><stop offset="1" stop-color="#0a1f3d"/>
+      <stop offset=".6" stop-color="#02030a"/><stop offset="1" stop-color="#101a3c"/>
     </radialGradient>
   </defs>`;
 
@@ -38,23 +38,23 @@ const defs = `
 const logo = (fundo = true) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">${defs}
   ${fundo ? `<circle cx="32" cy="32" r="31" fill="url(#v)"/>` : ""}
   <circle cx="32" cy="32" r="29.5" fill="none" stroke="url(#g)" stroke-width="1.4" opacity=".9"/>
-  <path d="M5.5 38.5c9 7.5 45 6.5 53-9.5" fill="none" stroke="#f2c14e" stroke-width="2.2" stroke-linecap="round" opacity=".85"/>
+  <path d="M5.5 38.5c9 7.5 45 6.5 53-9.5" fill="none" stroke="#dbe6f7" stroke-width="2.2" stroke-linecap="round" opacity=".85"/>
   <path d="${letras("CS", 32, 31.5, 36)}" fill="url(#g)"/>
 </svg>`;
 
 // Favicon: traço mais grosso para ler em 16–32 px
 const favicon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">${defs}
-  <circle cx="32" cy="32" r="31" fill="#010307"/>
+  <circle cx="32" cy="32" r="31" fill="#02030a"/>
   <circle cx="32" cy="32" r="28.5" fill="none" stroke="url(#g)" stroke-width="3"/>
   <path d="${letras("CS", 32, 32, 42)}" fill="url(#g)"/>
 </svg>`;
 
 // Ícone quadrado (celular): fundo cheio, sem transparência
 const quadrado = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">${defs}
-  <rect width="64" height="64" fill="#010307"/>
+  <rect width="64" height="64" fill="#02030a"/>
   <circle cx="32" cy="32" r="24" fill="url(#v)"/>
   <circle cx="32" cy="32" r="23" fill="none" stroke="url(#g)" stroke-width="1.2"/>
-  <path d="M10 37c7 6 37 5.5 44-8" fill="none" stroke="#f2c14e" stroke-width="1.8" stroke-linecap="round" opacity=".85"/>
+  <path d="M10 37c7 6 37 5.5 44-8" fill="none" stroke="#dbe6f7" stroke-width="1.8" stroke-linecap="round" opacity=".85"/>
   <path d="${letras("CS", 32, 31.5, 29)}" fill="url(#g)"/>
 </svg>`;
 

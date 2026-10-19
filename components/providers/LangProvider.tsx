@@ -26,6 +26,8 @@ export function LangProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     document.documentElement.lang = lang === "pt" ? "pt-BR" : "en";
+    // título e descrição só mudam na página inicial (a 404 tem os dela)
+    if (!document.getElementById("topo")) return;
     document.title = TEXTOS[lang].meta.title;
     document.querySelector('meta[name="description"]')?.setAttribute("content", TEXTOS[lang].meta.desc);
   }, [lang]);
