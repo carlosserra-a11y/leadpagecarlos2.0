@@ -1,0 +1,5 @@
+:HL["/leadpagecarlos2.0/_next/static/chunks/2djaczf63sb94.css","style"]
+:HL["/leadpagecarlos2.0/_next/static/media/inter_var-s.p.0gsaq8ukbf34m.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/leadpagecarlos2.0/_next/static/media/unifrakturcook_700-s.p.2-4tbk1fibup-.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+1:[["children",{"s":"__PAGE__","h":128}]]
+0:{"b":"s0e5O78hbaFuxHsgz53_u","t":{"t":{"s":"","h":16,"c":"$Q1"}}}
