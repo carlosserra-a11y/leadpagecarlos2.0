@@ -1,0 +1,4 @@
+User-Agent: *
+Allow: /
+
+Sitemap: https://carlosserra-a11y.github.io/leadpagecarlos2.0/sitemap.xml
